@@ -57,8 +57,18 @@ export class StripeService {
     const user = await userService.getUser(phoneNumber);
     
     if (user?.stripe_customer_id) {
-      customerId = user.stripe_customer_id;
-    } else {
+      // Verify customer exists (might be from test mode)
+      try {
+        await this.stripe.customers.retrieve(user.stripe_customer_id);
+        customerId = user.stripe_customer_id;
+        console.log('[STRIPE] Using existing customer:', customerId);
+      } catch (err) {
+        console.log('[STRIPE] Customer not found (likely test mode), creating new:', user.stripe_customer_id);
+        customerId = undefined; // Force creation of new customer
+      }
+    }
+    
+    if (!customerId) {
       // Create new Stripe customer
       const customer = await this.stripe.customers.create({
         phone: phoneNumber,
@@ -68,7 +78,7 @@ export class StripeService {
       });
       customerId = customer.id;
 
-      console.log('[STRIPE] Created customer:', customerId);
+      console.log('[STRIPE] Created new customer:', customerId);
     }
 
     // Create checkout session
