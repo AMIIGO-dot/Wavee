@@ -94,11 +94,12 @@ export class AIService {
     userMessage: string,
     conversationHistory: string[] = [],
     lastAiResponse: string | null = null,
-    userCategories: string[] = ['outdoor']
+    userCategories: string[] = ['outdoor'],
+    language: 'sv' | 'en' = 'sv'
   ): Promise<string> {
     try {
-      // Get system prompt based on user's selected categories
-      const systemPrompt = getSystemPromptForCategories(userCategories);
+      // Get system prompt based on user's selected categories and language
+      const systemPrompt = getSystemPromptForCategories(userCategories, language);
 
       // Build conversation context
       const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
@@ -221,26 +222,33 @@ export class AIService {
   async analyzeImage(
     imageUrl: string,
     userQuestion: string,
-    userCategories: string[] = ['outdoor']
+    userCategories: string[] = ['outdoor'],
+    language: 'sv' | 'en' = 'sv'
   ): Promise<string> {
     try {
-      const systemPrompt = getSystemPromptForCategories(userCategories);
+      const systemPrompt = getSystemPromptForCategories(userCategories, language);
 
       console.log('[AI] Analyzing image:', imageUrl);
+
+      const imageInstructions = language === 'en'
+        ? '\n\nYou are analyzing an image sent via MMS. Be practical and safety-focused. Identify plants, animals, terrain, weather, or hazards as relevant.'
+        : '\n\nDu analyserar en bild som skickats via MMS. Var praktisk och säkerhetsfokuserad. Identifiera växter, djur, terräng, väder eller faror när det är relevant.';
+
+      const defaultQuestion = language === 'en' ? 'What is this? Is it safe?' : 'Vad är detta? Är det säkert?';
 
       const completion = await this.client.chat.completions.create({
         model: 'gpt-4o-mini',
         messages: [
           {
             role: 'system',
-            content: systemPrompt + '\n\nYou are analyzing an image sent via MMS. Be practical and safety-focused. Identify plants, animals, terrain, weather, or hazards as relevant.',
+            content: systemPrompt + imageInstructions,
           },
           {
             role: 'user',
             content: [
               {
                 type: 'text',
-                text: userQuestion || 'What is this? Is it safe?',
+                text: userQuestion || defaultQuestion,
               },
               {
                 type: 'image_url',
@@ -255,8 +263,11 @@ export class AIService {
         max_tokens: 180,
       });
 
-      const rawResponse = completion.choices[0]?.message?.content || 
-        'Unable to analyze image. Please try again.';
+      const defaultError = language === 'en'
+        ? 'Unable to analyze image. Please try again.'
+        : 'Kunde inte analysera bilden. Försök igen.';
+
+      const rawResponse = completion.choices[0]?.message?.content || defaultError;
 
       // Normalize for SMS
       const response = normalizeSmsText(rawResponse);

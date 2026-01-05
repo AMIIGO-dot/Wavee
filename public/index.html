@@ -5,6 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WAVEE - Din SMS-assistent</title>
   <style>
+    .language-switcher {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      gap: 8px;
+      background: #f5f5f7;
+      padding: 8px;
+      border-radius: 12px;
+    }
+
+    .language-switcher button {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      color: #1d1d1f;
+      cursor: pointer;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .language-switcher button.active {
+      background: #1d1d1f;
+      color: #ffffff;
+    }
+
+    .language-switcher button:hover:not(.active) {
+      background: #e5e5e7;
+    }
+  
+  <style>
     * {
       margin: 0;
       padding: 0;
@@ -689,9 +721,13 @@
 <body>
   <div class="container">
     <header>
-      <a href="/login.html" class="login-link">Logga in</a>
+      <div class="language-switcher">
+        <button onclick="setLanguage('sv')" class="lang-btn active" data-lang="sv">🇸🇪 Svenska</button>
+        <button onclick="setLanguage('en')" class="lang-btn" data-lang="en">🇺🇸 English</button>
+      </div>
+      <a href="/login.html" class="login-link" data-i18n="login">Logga in</a>
       <img src="/assets/wavee.png" alt="WAVEE" class="logo">
-      <p class="subtitle">AI direkt via SMS – Ingen app behövs</p>
+      <p class="subtitle" data-i18n="subtitle">AI direkt via SMS – Ingen app behövs</p>
     </header>
 
     <!-- Hero Section -->
@@ -699,80 +735,81 @@
       <!-- Demo Section with Mobile Mockup -->
       <div class="demo-section">
         <div class="demo-content">
-          <h1>AI direkt från SMS.<br>Ingen app. Inget internet.</h1>
-          <p>Inga konton. Ingen inloggning. Bara skicka ett SMS och få svar direkt från AI.</p>
+          <h1 data-i18n="hero_title">AI direkt från SMS.<br>Ingen app. Inget internet.</h1>
+          <p data-i18n="hero_text">Inga konton. Ingen inloggning. Bara skicka ett SMS och få svar direkt från AI.</p>
           <div class="qr-code-section">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=sms:+46738631761?body=Hej,%20jag%20vill%20testa%20tj%C3%A4nsten" alt="Skanna för att skicka SMS">
-            <p><strong>Skanna för att testa gratis</strong></p>
-            <p style="font-size: 0.9rem; color: #86868b; margin-top: 5px;">3 gratis konversationer vid aktivering</p>
+            <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=sms:+46738631761?body=Hej,%20jag%20vill%20testa%20tj%C3%A4nsten" alt="Skanna för att skicka SMS">
+            <p><strong data-i18n="qr_scan_text">Skanna för att testa gratis</strong></p>
+            <p style="font-size: 0.9rem; color: #86868b; margin-top: 5px;" data-i18n="qr_free_credits">3 gratis konversationer vid aktivering</p>
+            <p id="phoneDisplay" style="font-size: 1.1rem; color: #1d1d1f; margin-top: 10px; font-weight: 600;">+46 73 863 1761</p>
           </div>
         </div>
         <div class="mobile-mockup">
           <div class="phone-screen">
-            <img src="/assets/aba513ce-d982-47fe-82ae-071420ea36f6.gif" alt="WAVEE SMS Demo">
+            <img id="demoGif" src="/assets/aba513ce-d982-47fe-82ae-071420ea36f6.gif" alt="WAVEE SMS Demo">
           </div>
         </div>
       </div>
     </div>
 
     <!-- USP Cards -->
-    <h2 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: #1d1d1f;">Varför WAVEE?</h2>
+    <h2 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: #1d1d1f;" data-i18n="why_wavee">Varför WAVEE?</h2>
     <div class="usp-grid">
       <div class="usp-card">
-        <h3>Kräver ingen mobildata</h3>
-        <p>Fungerar över vanlig SMS-täckning. Kompatibel med satellit-SMS.</p>
+        <h3 data-i18n="usp1_title">Kräver ingen mobildata</h3>
+        <p data-i18n="usp1_text">Fungerar över vanlig SMS-täckning. Kompatibel med satellit-SMS.</p>
       </div>
       <div class="usp-card">
-        <h3>Ingen app att ladda ner</h3>
-        <p>Skicka ett vanligt SMS. Inget konto. Inga uppgifter som sparas.</p>
+        <h3 data-i18n="usp2_title">Ingen app att ladda ner</h3>
+        <p data-i18n="usp2_text">Skicka ett vanligt SMS. Inget konto. Inga uppgifter som sparas.</p>
       </div>
       <div class="usp-card">
-        <h3>Svar på sekunder</h3>
-        <p>Korta, säkerhetsfokuserade svar. Inga meningslösa detaljer.</p>
+        <h3 data-i18n="usp3_title">Svar på sekunder</h3>
+        <p data-i18n="usp3_text">Korta, säkerhetsfokuserade svar. Inga meningslösa detaljer.</p>
       </div>
       <div class="usp-card">
-        <h3>Väder och navigation</h3>
-        <p>SMHI-prognoser, GPS-positioner och närliggande platser när du behöver det.</p>
+        <h3 data-i18n="usp4_title">Väder och navigation</h3>
+        <p data-i18n="usp4_text">Väderprognoser, GPS-positioner och närliggande platser när du behöver det.</p>
       </div>
       <div class="usp-card">
-        <h3>Bildanalys via MMS</h3>
-        <p>Skicka bild och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI analyserar direkt.</p>
+        <h3 data-i18n="usp5_title">Bildanalys via MMS</h3>
+        <p data-i18n="usp5_text">Skicka bild och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI analyserar direkt.</p>
       </div>
       <div class="usp-card">
-        <h3>Fungerar överallt</h3>
-        <p>Så länge du har SMS-täckning kan du ställa frågor. I skogen, på havet, utomlands.</p>
+        <h3 data-i18n="usp6_title">Fungerar överallt</h3>
+        <p data-i18n="usp6_text">Så länge du har SMS-täckning kan du ställa frågor. I skogen, på havet, utomlands.</p>
       </div>
       <div class="usp-card">
-        <h3>Betala för det du använder</h3>
-        <p>Inga prenumerationer. Köp ett saldopaket när du behöver det.</p>
+        <h3 data-i18n="usp7_title">Betala för det du använder</h3>
+        <p data-i18n="usp7_text">Inga prenumerationer. Köp ett saldopaket när du behöver det.</p>
       </div>
       <div class="usp-card">
-        <h3>Enkel och pålitlig</h3>
-        <p>En tjänst byggd för situationer där tillförlitlighet är viktigare än funktioner.</p>
+        <h3 data-i18n="usp8_title">Enkel och pålitlig</h3>
+        <p data-i18n="usp8_text">En tjänst byggd för situationer där tillförlitlighet är viktigare än funktioner.</p>
       </div>
     </div>
 
     <!-- Privacy Section -->
     <div class="privacy-section">
-      <h2>AI-assistenten som inte spårar dig</h2>
-      <p class="subtitle">Ingen app. Ingen molndatabas. Ingen positionsspårning.</p>
+      <h2 data-i18n="privacy_title">AI-assistenten som inte spårar dig</h2>
+      <p class="subtitle" data-i18n="privacy_subtitle">Ingen app. Ingen molndatabas. Ingen positionsspårning.</p>
       
       <div class="privacy-features">
         <div class="privacy-feature">
-          <h3>Ingen bakgrundsspårning</h3>
-          <p>Ingen GPS-tracking i bakgrunden. Ingen analytics. Ingen metadata-insamling.</p>
+          <h3 data-i18n="priv1_title">Ingen bakgrundsspårning</h3>
+          <p data-i18n="priv1_text">Ingen GPS-tracking i bakgrunden. Ingen analytics. Ingen metadata-insamling.</p>
         </div>
         <div class="privacy-feature">
-          <h3>Ingen permanent historik</h3>
-          <p>Konversationer raderas efter 30 minuter. Inga chatloggar sparas i molnet.</p>
+          <h3 data-i18n="priv2_title">Ingen permanent historik</h3>
+          <p data-i18n="priv2_text">Konversationer raderas efter 30 minuter. Inga chatloggar sparas i molnet.</p>
         </div>
         <div class="privacy-feature">
-          <h3>Ingen app att installera</h3>
-          <p>Fungerar via vanlig SMS. Inget att ladda ner. Ingen alltid-på tjänst.</p>
+          <h3 data-i18n="priv3_title">Ingen app att installera</h3>
+          <p data-i18n="priv3_text">Fungerar via vanlig SMS. Inget att ladda ner. Ingen alltid-på tjänst.</p>
         </div>
         <div class="privacy-feature">
-          <h3>Fungerar offline</h3>
-          <p>Stöd för satellit-SMS (Garmin inReach, Starlink). Ingen mobildata krävs.</p>
+          <h3 data-i18n="priv4_title">Fungerar offline</h3>
+          <p data-i18n="priv4_text">Stöd för satellit-SMS (Garmin inReach, Starlink). Ingen mobildata krävs.</p>
         </div>
       </div>
 
@@ -780,140 +817,167 @@
         <table>
           <thead>
             <tr>
-              <th>Funktion</th>
+              <th data-i18n="comp_feature">Funktion</th>
               <th>WAVEE</th>
-              <th>Traditionella appar</th>
+              <th data-i18n="comp_traditional">Traditionella appar</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>Kräver app-installation</td>
-              <td><span class="crossmark">✗</span> Nej</td>
-              <td><span class="checkmark">✓</span> Ja</td>
+              <td data-i18n="comp_row1">Kräver app-installation</td>
+              <td><span class="crossmark">✗</span> <span data-i18n="no">Nej</span></td>
+              <td><span class="checkmark">✓</span> <span data-i18n="yes">Ja</span></td>
             </tr>
             <tr>
-              <td>Bakgrundsaktivitet & tracking</td>
-              <td><span class="crossmark">✗</span> Aldrig</td>
-              <td><span class="checkmark">✓</span> Ofta</td>
+              <td data-i18n="comp_row2">Bakgrundsaktivitet & tracking</td>
+              <td><span class="crossmark">✗</span> <span data-i18n="never">Aldrig</span></td>
+              <td><span class="checkmark">✓</span> <span data-i18n="often">Ofta</span></td>
             </tr>
             <tr>
-              <td>Sparar konversationshistorik</td>
-              <td><span class="crossmark">✗</span> 30 min</td>
-              <td><span class="checkmark">✓</span> Permanent</td>
+              <td data-i18n="comp_row3">Sparar konversationshistorik</td>
+              <td><span class="crossmark">✗</span> <span data-i18n="comp_30min">30 min</span></td>
+              <td><span class="checkmark">✓</span> <span data-i18n="permanent">Permanent</span></td>
             </tr>
             <tr>
-              <td>Fungerar offline/satellit</td>
-              <td><span class="checkmark">✓</span> Ja</td>
-              <td><span class="crossmark">✗</span> Nej</td>
+              <td data-i18n="comp_row4">Fungerar offline/satellit</td>
+              <td><span class="checkmark">✓</span> <span data-i18n="yes">Ja</span></td>
+              <td><span class="crossmark">✗</span> <span data-i18n="no">Nej</span></td>
             </tr>
             <tr>
-              <td>Kräver personlig data</td>
-              <td><span class="crossmark">✗</span> Bara telefonnummer</td>
-              <td><span class="checkmark">✓</span> Konto, email, etc</td>
+              <td data-i18n="comp_row5">Kräver personlig data</td>
+              <td><span class="crossmark">✗</span> <span data-i18n="comp_phone_only">Bara telefonnummer</span></td>
+              <td><span class="checkmark">✓</span> <span data-i18n="comp_account_etc">Konto, email, etc</span></td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
 
+    <!-- Nokia 3310 Section -->
+    <div class="privacy-section" style="margin: 80px auto; max-width: 1000px;">
+      <div style="display: flex; align-items: center; gap: 60px; flex-wrap: wrap;">
+        <div style="flex: 1; min-width: 300px;">
+          <h2 style="font-size: 2.5em; font-weight: 700; margin-bottom: 20px; color: #1d1d1f;" data-i18n="nokia_title">AI till din Nokia 3310.</h2>
+          <p style="font-size: 1.3em; color: #666; margin-bottom: 30px; line-height: 1.5;" data-i18n="nokia_subtitle">Du behöver ingen smartphone för att använda AI. Vilken telefon som helst med SMS fungerar.</p>
+          <ul style="list-style: none; padding: 0;">
+            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
+              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
+              <span data-i18n="nokia_point1">Ingen smartphone behövs</span>
+            </li>
+            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
+              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
+              <span data-i18n="nokia_point2">Bara SMS-funktion krävs</span>
+            </li>
+            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
+              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
+              <span data-i18n="nokia_point3">Perfekt för minimalism & backup</span>
+            </li>
+          </ul>
+        </div>
+        <div style="flex: 1; min-width: 300px; text-align: center;">
+          <img src="assets/cellphone-6596299_1280.png" alt="Nokia 3310" style="max-width: 100%; height: auto; max-height: 400px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1));">
+        </div>
+      </div>
+    </div>
+
     <div class="pricing-grid">
       <!-- Starter Tier -->
       <div class="pricing-card">
-        <div class="tier-name">Starter</div>
-        <div class="price">79 kr<span class="price-suffix"></span></div>
-        <div class="credits">30 meddelanden</div>
+        <div class="tier-name" data-i18n="tier_starter">Starter</div>
+        <div class="price"><span class="price-amount">79</span> <span class="currency" data-i18n="currency">kr</span><span class="price-suffix"></span></div>
+        <div class="credits"><span class="credit-amount">30</span> <span data-i18n="messages">meddelanden</span></div>
         <ul class="features">
-          <li>Väderprognoser</li>
-          <li>GPS-position</li>
-          <li>Närliggande platser</li>
-          <li>Praktiska råd</li>
+          <li data-i18n="feat_weather">Väderprognoser</li>
+          <li data-i18n="feat_gps">GPS-position</li>
+          <li data-i18n="feat_nearby">Närliggande platser</li>
+          <li data-i18n="feat_advice">Praktiska råd</li>
         </ul>
-        <button class="btn btn-secondary" onclick="openCheckout('starter')">Köp Starter</button>
+        <button class="btn btn-secondary" onclick="openCheckout('starter')" data-i18n="btn_buy_starter">Köp Starter</button>
       </div>
 
       <!-- Pro Tier (Featured) -->
       <div class="pricing-card featured">
-        <div class="featured-badge">Populär</div>
-        <div class="tier-name">Pro</div>
-        <div class="price">199 kr<span class="price-suffix"></span></div>
-        <div class="credits">100 meddelanden</div>
+        <div class="featured-badge" data-i18n="popular">Populär</div>
+        <div class="tier-name" data-i18n="tier_pro">Pro</div>
+        <div class="price"><span class="price-amount">199</span> <span class="currency" data-i18n="currency">kr</span><span class="price-suffix"></span></div>
+        <div class="credits"><span class="credit-amount">100</span> <span data-i18n="messages">meddelanden</span></div>
         <ul class="features">
-          <li>Allt i Starter</li>
-          <li>Fler meddelanden per krona</li>
-          <li>Längre svar vid behov</li>
-          <li>Passar längre resor</li>
+          <li data-i18n="feat_starter_all">Allt i Starter</li>
+          <li data-i18n="feat_more_per_kr">Fler meddelanden per krona</li>
+          <li data-i18n="feat_longer">Längre svar vid behov</li>
+          <li data-i18n="feat_trips">Passar längre resor</li>
         </ul>
-        <button class="btn btn-primary" onclick="openCheckout('pro')">Köp Pro</button>
+        <button class="btn btn-primary" onclick="openCheckout('pro')" data-i18n="btn_buy_pro">Köp Pro</button>
       </div>
 
       <!-- Premium Tier -->
       <div class="pricing-card">
-        <div class="tier-name">Premium</div>
-        <div class="price">499 kr<span class="price-suffix"></span></div>
-        <div class="credits">350 meddelanden</div>
+        <div class="tier-name" data-i18n="tier_premium">Premium</div>
+        <div class="price"><span class="price-amount">499</span> <span class="currency" data-i18n="currency">kr</span><span class="price-suffix"></span></div>
+        <div class="credits"><span class="credit-amount">350</span> <span data-i18n="messages">meddelanden</span></div>
         <ul class="features">
-          <li>Allt i Pro</li>
-          <li>Bäst pris per meddelande</li>
-          <li>Perfekt för yrkesmässig användning</li>
-          <li>Faktura vid förfrågan</li>
+          <li data-i18n="feat_pro_all">Allt i Pro</li>
+          <li data-i18n="feat_best_price">Bäst pris per meddelande</li>
+          <li data-i18n="feat_professional">Perfekt för yrkesmässig användning</li>
+          <li data-i18n="feat_invoice">Faktura vid förfrågan</li>
         </ul>
-        <button class="btn btn-primary" onclick="openCheckout('premium')">Köp Premium</button>
+        <button class="btn btn-primary" onclick="openCheckout('premium')" data-i18n="btn_buy_premium">Köp Premium</button>
       </div>
     </div>
 
     <div class="info-section">
-      <h2>Så fungerar det</h2>
-      <p><strong>1. Skanna QR-koden</strong> – SMS:a +46 73 863 1761 eller skanna QR-koden för att komma igång.</p>
-      <p><strong>2. Bekräfta ditt nummer</strong> – Du får ett SMS. Svara "JA" för att aktivera och få 3 gratis konversationer att testa med.</p>
-      <p><strong>3. Testa tjänsten</strong> – Ställ frågor om väder, navigation, camping eller annat. Du har 3 gratis konversationer.</p>
-      <p><strong>4. Köp credits vid behov</strong> – När du gillar tjänsten, köp ett saldopaket som passar dina behov.</p>
+      <h2 data-i18n="how_it_works">Så fungerar det</h2>
+      <p><strong data-i18n="step1_title">1. Skanna QR-koden</strong> <span data-i18n="step1_text">– SMS:a eller skanna QR-koden för att komma igång.</span></p>
+      <p><strong data-i18n="step2_title">2. Bekräfta ditt nummer</strong> <span data-i18n="step2_text">– Du får ett SMS. Svara "YES" för att aktivera och få 3 gratis konversationer att testa med.</span></p>
+      <p><strong data-i18n="step3_title">3. Testa tjänsten</strong> <span data-i18n="step3_text">– Ställ frågor om väder, navigation, camping eller annat. Du har 3 gratis konversationer.</span></p>
+      <p><strong data-i18n="step4_title">4. Köp credits vid behov</strong> <span data-i18n="step4_text">– När du gillar tjänsten, köp ett saldopaket som passar dina behov.</span></p>
     </div>
 
     <div class="info-section">
-      <h2>Om tjänsten</h2>
-      <p><strong>Betala bara för det du använder</strong> – Varje SMS du skickar och får kostar ett meddelande från ditt saldo. Köp mer när du behöver. Ingen bindningstid. Inget som löper på.</p>
-      <p><strong>Exempel på frågor:</strong> "Väder i Abisko nästa vecka" – "Var är jag" – "Närmaste apoteket" – "Kan man äta rödlistade svampar"</p>
+      <h2 data-i18n="about_service">Om tjänsten</h2>
+      <p><strong data-i18n="pay_as_you_go_title">Betala bara för det du använder</strong> <span data-i18n="pay_as_you_go_text">– Varje SMS du skickar och får kostar ett meddelande från ditt saldo. Köp mer när du behöver. Ingen bindningstid. Inget som löper på.</span></p>
+      <p><strong data-i18n="example_questions_title">Exempel på frågor:</strong> <span data-i18n="example_questions_text">"Väder nästa vecka" – "Var är jag" – "Närmaste apoteket" – "Kan man äta denna svamp"</span></p>
     </div>
 
     <div class="info-section" style="border-top: 1px solid #333; padding-top: 32px; margin-top: 32px; font-size: 0.9rem; color: #888;">
-      <p><strong>Ansvar och begränsningar</strong></p>
-      <p>WAVEE ger information baserad på tillgängliga källor, men ersätter inte professionell rådgivning eller utbildning. AI kan begå misstag. Kontrollera viktig information. Väderinformation kommer från SMHI och är endast vägledande. Vid akut fara, kontakta alltid 112. Användaren ansvarar själv för sina beslut i fält.</p>
+      <p><strong data-i18n="disclaimer_title">Ansvar och begränsningar</strong></p>
+      <p data-i18n="disclaimer_text">WAVEE ger information baserad på tillgängliga källor, men ersätter inte professionell rådgivning eller utbildning. AI kan begå misstag. Kontrollera viktig information. Väderinformation är endast vägledande. Vid akut fara, kontakta alltid nödnumret. Användaren ansvarar själv för sina beslut i fält.</p>
     </div>
 
     <!-- FAQ Section -->
     <div class="faq-section">
-      <h2 style="text-align: center; margin-bottom: 48px;">Vanliga frågor</h2>
+      <h2 style="text-align: center; margin-bottom: 48px;" data-i18n="faq_title">Vanliga frågor</h2>
       
       <div class="faq-item">
         <div class="faq-question">
-          <span>Hur fungerar tjänsten?</span>
+          <span data-i18n="faq1_q">Hur fungerar tjänsten?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p>WAVEE är en AI-assistent du når via SMS. Skanna QR-koden eller SMS:a till +46 73 863 1761. Bekräfta med "JA" så får du 3 gratis konversationer att testa med. Sedan kan du köpa ett saldopaket när du vill fortsätta använda tjänsten. Varje konversation (fråga + svar) kostar 1 credit från ditt saldo.</p>
+          <p data-i18n="faq1_a">WAVEE är en AI-assistent du når via SMS. Skanna QR-koden eller SMS:a. Bekräfta med "YES" så får du 3 gratis konversationer att testa med. Sedan kan du köpa ett saldopaket när du vill fortsätta använda tjänsten. Varje konversation (fråga + svar) kostar 1 credit från ditt saldo.</p>
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question">
-          <span>Vilken information kan jag få?</span>
+          <span data-i18n="faq2_q">Vilken information kan jag få?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p>Du kan välja mellan 8 olika AI-kategorier (friluftsliv, byggnad, trädgård, resor, teknik, matlagning, hälsa, ekonomi). Du får väderprognoser från SMHI, GPS-position, närliggande platser (vandringsleder, stugor, apotek, mataffärer), och AI-assistans inom dina valda kategorier.</p>
-          <p><strong>Bildanalys:</strong> Skicka en bild via MMS och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI:n analyserar bilden och ger svar baserat på dina valda kategorier.</p>
+          <p data-i18n="faq2_a1">Du kan välja mellan 8 olika AI-kategorier (friluftsliv, byggnad, trädgård, resor, teknik, matlagning, hälsa, ekonomi). Du får väderprognoser, GPS-position, närliggande platser (vandringsleder, stugor, apotek, mataffärer), och AI-assistans inom dina valda kategorier.</p>
+          <p><strong data-i18n="image_analysis">Bildanalys:</strong> <span data-i18n="faq2_a2">Skicka en bild via MMS och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI:n analyserar bilden och ger svar baserat på dina valda kategorier.</span></p>
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question">
-          <span>Hur många meddelanden får jag för pengarna?</span>
+          <span data-i18n="faq3_q">Hur många meddelanden får jag för pengarna?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p><strong>Starter (79 kr):</strong> 30 meddelanden – Perfekt för att testa tjänsten eller kortare utflykter.<br>
-          <strong>Pro (199 kr):</strong> 100 meddelanden – Passar längre resor och frekvent användning.<br>
-          <strong>Premium (499 kr):</strong> 350 meddelanden – Bäst pris per meddelande för yrkesmässig användning eller intensiva äventyr.</p>
+          <p data-i18n="faq3_a"><strong>Starter:</strong> 30 meddelanden – Perfekt för att testa tjänsten eller kortare utflykter.<br>
+          <strong>Pro:</strong> 100 meddelanden – Passar längre resor och frekvent användning.<br>
+          <strong>Premium:</strong> 350 meddelanden – Bäst pris per meddelande för yrkesmässig användning eller intensiva äventyr.</p>
         </div>
       </div>
 
@@ -979,48 +1043,48 @@
 
       <div class="faq-item">
         <div class="faq-question">
-          <span>Hur avbryter jag tjänsten?</span>
+          <span data-i18n="faq10_q">Hur avbryter jag tjänsten?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p>Det finns ingen prenumeration att avsluta – du betalar bara för de credits du köper. Om du vill sluta få meddelanden från systemet, SMS:a "STOP" till +46 73 863 1761. Dina kvarvarande credits raderas då. Du kan alltid komma tillbaka senare och köpa nya credits.</p>
+          <p data-i18n="faq10_a">Det finns ingen prenumeration att avsluta – du betalar bara för de credits du köper. Om du vill sluta få meddelanden från systemet, SMS:a "STOP". Dina kvarvarande credits raderas då. Du kan alltid komma tillbaka senare och köpa nya credits.</p>
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question">
-          <span>Kan jag få en refund om jag inte är nöjd?</span>
+          <span data-i18n="faq11_q">Kan jag få en refund om jag inte är nöjd?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p>Ja, om du inte har använt några av dina köpta credits kan du kontakta support inom 14 dagar för full återbetalning. Efter att du har börjat använda credits sker inga återbetalningar, men du kan alltid spara kvarvarande credits för framtida användning.</p>
+          <p data-i18n="faq11_a">Ja, om du inte har använt några av dina köpta credits kan du kontakta support inom 14 dagar för full återbetalning. Efter att du har börjat använda credits sker inga återbetalningar, men du kan alltid spara kvarvarande credits för framtida användning.</p>
         </div>
       </div>
 
       <div class="faq-item">
         <div class="faq-question">
-          <span>Är min data säker?</span>
+          <span data-i18n="faq12_q">Är min data säker?</span>
           <span class="faq-icon">+</span>
         </div>
         <div class="faq-answer">
-          <p>Vi tar datasäkerhet på största allvar. Konversationer raderas efter 30 minuter. Vi sparar ingen permanent chatthistorik. Betalningar hanteras av Stripe med bankstandard-säkerhet. Ingen bakgrundsspårning, ingen analytics, ingen metadata-insamling.</p>
+          <p data-i18n="faq12_a">Vi tar datasäkerhet på största allvar. Konversationer raderas efter 30 minuter. Vi sparar ingen permanent chatthistorik. Betalningar hanteras av Stripe med bankstandard-säkerhet. Ingen bakgrundsspårning, ingen analytics, ingen metadata-insamling.</p>
         </div>
       </div>
     </div>
   </div>
 
   <footer>
-    <p>&copy; 2026 WAVEE. Alla rättigheter förbehållna.</p>
-    <p>SMS:a "STOP" för att avsluta. "HELP" för support.</p>
+    <p data-i18n="footer_copyright">&copy; 2026 WAVEE. Alla rättigheter förbehållna.</p>
+    <p data-i18n="footer_commands">SMS:a "STOP" för att avsluta. "HELP" för support.</p>
   </footer>
 
   <!-- Checkout Modal -->
   <div id="checkoutModal" class="modal">
     <div class="modal-content">
-      <h2 class="modal-title">Ange ditt telefonnummer</h2>
+      <h2 class="modal-title" data-i18n="modal_title">Ange ditt telefonnummer</h2>
       <form id="checkoutForm">
         <div class="form-group">
-          <label for="phoneNumber">Mobilnummer (inkl. landskod)</label>
+          <label for="phoneNumber" data-i18n="modal_phone_label">Mobilnummer (inkl. landskod)</label>
           <input 
             type="tel" 
             id="phoneNumber" 
@@ -1029,17 +1093,364 @@
             required
             pattern="^\+[1-9]\d{10,14}$"
           >
-          <small style="color: #666; display: block; margin-top: 8px;">
+          <small style="color: #666; display: block; margin-top: 8px;" data-i18n="modal_phone_hint">
             Format: +46 följt av ditt mobilnummer (utan 0)
           </small>
         </div>
-        <button type="submit" class="btn btn-primary">Fortsätt till betalning</button>
-        <button type="button" class="btn btn-close" onclick="closeCheckout()">Avbryt</button>
+        <button type="submit" class="btn btn-primary" data-i18n="modal_continue">Fortsätt till betalning</button>
+        <button type="button" class="btn btn-close" onclick="closeCheckout()" data-i18n="modal_cancel">Avbryt</button>
       </form>
     </div>
   </div>
 
   <script>
+    // Language translations
+    const translations = {
+      sv: {
+        login: 'Logga in',
+        subtitle: 'AI direkt via SMS – Ingen app behövs',
+        hero_title: 'AI direkt från SMS.<br>Ingen app. Inget internet.',
+        hero_text: 'Inga konton. Ingen inloggning. Bara skicka ett SMS och få svar direkt från AI.',
+        qr_scan_text: 'Skanna för att testa gratis',
+        qr_free_credits: '3 gratis konversationer vid aktivering',
+        phone_number: '+46 73 863 1761',
+        qr_message: 'Hej, jag vill testa tjänsten',
+        why_wavee: 'Varför WAVEE?',
+        usp1_title: 'Kräver ingen mobildata',
+        usp1_text: 'Fungerar över vanlig SMS-täckning. Kompatibel med satellit-SMS.',
+        usp2_title: 'Ingen app att ladda ner',
+        usp2_text: 'Skicka ett vanligt SMS. Inget konto. Inga uppgifter som sparas.',
+        usp3_title: 'Svar på sekunder',
+        usp3_text: 'Korta, säkerhetsfokuserade svar. Inga meningslösa detaljer.',
+        usp4_title: 'Väder och navigation',
+        usp4_text: 'Väderprognoser, GPS-positioner och närliggande platser när du behöver det.',
+        usp5_title: 'Bildanalys via MMS',
+        usp5_text: 'Skicka bild och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI analyserar direkt.',
+        usp6_title: 'Fungerar överallt',
+        usp6_text: 'Så länge du har SMS-täckning kan du ställa frågor. I skogen, på havet, utomlands.',
+        usp7_title: 'Betala för det du använder',
+        usp7_text: 'Inga prenumerationer. Köp ett saldopaket när du behöver det.',
+        usp8_title: 'Enkel och pålitlig',
+        usp8_text: 'En tjänst byggd för situationer där tillförlitlighet är viktigare än funktioner.',
+        privacy_title: 'AI-assistenten som inte spårar dig',
+        privacy_subtitle: 'Ingen app. Ingen molndatabas. Ingen positionsspårning.',
+        priv1_title: 'Ingen bakgrundsspårning',
+        priv1_text: 'Ingen GPS-tracking i bakgrunden. Ingen analytics. Ingen metadata-insamling.',
+        priv2_title: 'Ingen permanent historik',
+        priv2_text: 'Konversationer raderas efter 30 minuter. Inga chatloggar sparas i molnet.',
+        priv3_title: 'Ingen app att installera',
+        priv3_text: 'Fungerar via vanlig SMS. Inget att ladda ner. Ingen alltid-på tjänst.',
+        priv4_title: 'Ingen mobildata krävs',
+        priv4_text: 'Fungerar med satellit-SMS-enheter som Garmin inReach. Bara SMS-täckning krävs.',
+        nokia_title: 'AI till din Nokia 3310.',
+        nokia_subtitle: 'Du behöver ingen smartphone för att använda AI. Vilken telefon som helst med SMS fungerar.',
+        nokia_point1: 'Ingen smartphone behövs',
+        nokia_point2: 'Bara SMS-funktion krävs',
+        nokia_point3: 'Perfekt för minimalism & backup',
+        comp_feature: 'Funktion',
+        comp_traditional: 'Traditionella appar',
+        comp_row1: 'Kräver app-installation',
+        comp_row2: 'Bakgrundsaktivitet & tracking',
+        comp_row3: 'Sparar konversationshistorik',
+        comp_row4: 'Satellit-SMS (Garmin inReach)',
+        comp_row5: 'Kräver personlig data',
+        no: 'Nej',
+        yes: 'Ja',
+        never: 'Aldrig',
+        often: 'Ofta',
+        comp_30min: '30 min',
+        permanent: 'Permanent',
+        comp_phone_only: 'Bara telefonnummer',
+        comp_account_etc: 'Konto, email, etc',
+        tier_starter: 'Starter',
+        tier_pro: 'Pro',
+        tier_premium: 'Premium',
+        currency: 'kr',
+        messages: 'meddelanden',
+        popular: 'Populär',
+        feat_weather: 'Väderprognoser',
+        feat_gps: 'GPS-position',
+        feat_nearby: 'Närliggande platser',
+        feat_advice: 'Praktiska råd',
+        feat_starter_all: 'Allt i Starter',
+        feat_more_per_kr: 'Fler meddelanden per krona',
+        feat_longer: 'Längre svar vid behov',
+        feat_trips: 'Passar längre resor',
+        feat_pro_all: 'Allt i Pro',
+        feat_best_price: 'Bäst pris per meddelande',
+        feat_professional: 'Perfekt för yrkesmässig användning',
+        feat_invoice: 'Faktura vid förfrågan',
+        btn_buy_starter: 'Köp Starter',
+        btn_buy_pro: 'Köp Pro',
+        btn_buy_premium: 'Köp Premium',
+        how_it_works: 'Så fungerar det',
+        step1_title: '1. Skanna QR-koden',
+        step1_text: '– SMS:a eller skanna QR-koden för att komma igång.',
+        step2_title: '2. Bekräfta ditt nummer',
+        step2_text: '– Du får ett SMS. Svara "YES" för att aktivera och få 3 gratis konversationer att testa med.',
+        step3_title: '3. Testa tjänsten',
+        step3_text: '– Ställ frågor om väder, navigation, camping eller annat. Du har 3 gratis konversationer.',
+        step4_title: '4. Köp credits vid behov',
+        step4_text: '– När du gillar tjänsten, köp ett saldopaket som passar dina behov.',
+        about_service: 'Om tjänsten',
+        pay_as_you_go_title: 'Betala bara för det du använder',
+        pay_as_you_go_text: '– Varje SMS du skickar och får kostar ett meddelande från ditt saldo. Köp mer när du behöver. Ingen bindningstid. Inget som löper på.',
+        example_questions_title: 'Exempel på frågor:',
+        example_questions_text: '"Väder nästa vecka" – "Var är jag" – "Närmaste apoteket" – "Kan man äta denna svamp"',
+        disclaimer_title: 'Ansvar och begränsningar',
+        disclaimer_text: 'WAVEE ger information baserad på tillgängliga källor, men ersätter inte professionell rådgivning eller utbildning. AI kan begå misstag. Kontrollera viktig information. Väderinformation är endast vägledande. Vid akut fara, kontakta alltid nödnumret. Användaren ansvarar själv för sina beslut i fält.',
+        faq_title: 'Vanliga frågor',
+        faq1_q: 'Hur fungerar tjänsten?',
+        faq1_a: 'WAVEE är en AI-assistent du når via SMS. Skanna QR-koden eller SMS:a. Bekräfta med "YES" så får du 3 gratis konversationer att testa med. Sedan kan du köpa ett saldopaket när du vill fortsätta använda tjänsten. Varje konversation (fråga + svar) kostar 1 credit från ditt saldo.',
+        faq2_q: 'Vilken information kan jag få?',
+        faq2_a1: 'Du kan välja mellan 8 olika AI-kategorier (friluftsliv, byggnad, trädgård, resor, teknik, matlagning, hälsa, ekonomi). Du får väderprognoser, GPS-position, närliggande platser (vandringsleder, stugor, apotek, mataffärer), och AI-assistans inom dina valda kategorier.',
+        image_analysis: 'Bildanalys:',
+        faq2_a2: 'Skicka en bild via MMS och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI:n analyserar bilden och ger svar baserat på dina valda kategorier.',
+        faq3_q: 'Hur många meddelanden får jag för pengarna?',
+        faq3_a: '<strong>Starter:</strong> 30 meddelanden – Perfekt för att testa tjänsten eller kortare utflykter.<br><strong>Pro:</strong> 100 meddelanden – Passar längre resor och frekvent användning.<br><strong>Premium:</strong> 350 meddelanden – Bäst pris per meddelande för yrkesmässig användning eller intensiva äventyr.',
+        faq4_q: 'Hur fungerar credits?',
+        faq4_a: 'En komplett konversation (din fråga + ett AI-svar) kostar 1 credit. Om du svarar "MORE" för ett längre svar räknas det som en ny konversation (1 credit till). Väder- och platssökningar ingår i krediten för konversationen.',
+        faq5_q: 'Fungerar tjänsten utan internetuppkoppling?',
+        faq5_a: 'Du behöver mobilnät (GSM) för att skicka och ta emot SMS, men inte internetuppkoppling. Om du har täckning för vanliga textmeddelanden fungerar WAVEE – även i områden utan 4G/5G. Perfekt för avlägsna fjällområden där endast SMS fungerar.',
+        faq6_q: 'Hur exakt är väderinformationen?',
+        faq6_a: 'Väderdata kommer från tillförlitliga källor och är samma som många väderapplikationer använder. Prognoserna är tillförlitliga för de närmaste dagarna, men väder kan förändras snabbt särskilt i fjällen. Använd alltid informationen som en vägledning och var förberedd på väderomslag.',
+        faq7_q: 'Kan jag använda tjänsten utomlands?',
+        faq7_a: 'Ja, du kan skicka SMS från utlandet, men då kan roamingkostnader tillkomma från din teleoperatör. WAVEE:s credits gäller oavsett var du befinner dig, men kontrollera med din operatör vad internationella SMS kostar.',
+        faq8_q: 'Hur länge är mina credits giltiga?',
+        faq8_a: 'Dina credits har ingen utgångsdatum. De ligger kvar på ditt konto tills du använder dem. Du kan köpa fler credits när som helst, och de läggs till ditt befintliga saldo.',
+        faq9_q: 'Vad händer om jag får ett felaktigt svar?',
+        faq9_a: 'AI-system kan göra misstag. WAVEE ger information baserad på tillgängliga källor och träningsdata, men ersätter inte professionell rådgivning eller utbildning. Kontrollera alltid viktig information från flera källor. Vid akuta situationer eller nödsituationer, ring alltid nödnumret.',
+        faq10_q: 'Hur avbryter jag tjänsten?',
+        faq10_a: 'Det finns ingen prenumeration att avsluta – du betalar bara för de credits du köper. Om du vill sluta få meddelanden från systemet, SMS:a "STOP". Dina kvarvarande credits raderas då. Du kan alltid komma tillbaka senare och köpa nya credits.',
+        faq11_q: 'Kan jag få en refund om jag inte är nöjd?',
+        faq11_a: 'Ja, om du inte har använt några av dina köpta credits kan du kontakta support inom 14 dagar för full återbetalning. Efter att du har börjat använda credits sker inga återbetalningar, men du kan alltid spara kvarvarande credits för framtida användning.',
+        faq12_q: 'Är min data säker?',
+        faq12_a: 'Vi tar datasäkerhet på största allvar. Konversationer raderas efter 30 minuter. Vi sparar ingen permanent chatthistorik. Betalningar hanteras av Stripe med bankstandard-säkerhet. Ingen bakgrundsspårning, ingen analytics, ingen metadata-insamling.',
+        footer_copyright: '&copy; 2026 WAVEE. Alla rättigheter förbehållna.',
+        footer_commands: 'SMS:a "STOP" för att avsluta. "HELP" för support.',
+        modal_title: 'Ange ditt telefonnummer',
+        modal_phone_label: 'Mobilnummer (inkl. landskod)',
+        modal_phone_hint: 'Format: +46 följt av ditt mobilnummer (utan 0)',
+        modal_continue: 'Fortsätt till betalning',
+        modal_cancel: 'Avbryt'
+      },
+      en: {
+        login: 'Login',
+        subtitle: 'AI directly via SMS – No app needed',
+        hero_title: 'AI directly from SMS.<br>No app. No internet.',
+        hero_text: 'No accounts. No login. Just send an SMS and get answers directly from AI.',
+        qr_scan_text: 'Scan to try for free',
+        qr_free_credits: '3 free conversations upon activation',
+        phone_number: '+1 307 318 3355',
+        qr_message: 'Hello, I want to try the service',
+        why_wavee: 'Why WAVEE?',
+        usp1_title: 'No mobile data required',
+        usp1_text: 'Works over regular SMS coverage. Compatible with satellite SMS.',
+        usp2_title: 'No app to download',
+        usp2_text: 'Send a regular SMS. No account. No data stored.',
+        usp3_title: 'Answers in seconds',
+        usp3_text: 'Short, safety-focused responses. No meaningless details.',
+        usp4_title: 'Weather and navigation',
+        usp4_text: 'Weather forecasts, GPS positions, and nearby places when you need them.',
+        usp5_title: 'Image analysis via MMS',
+        usp5_text: 'Send a picture and ask "Can I eat this mushroom?" or "What plant is this?". AI analyzes instantly.',
+        usp6_title: 'Works everywhere',
+        usp6_text: 'As long as you have SMS coverage, you can ask questions. In the forest, at sea, abroad.',
+        usp7_title: 'Pay for what you use',
+        usp7_text: 'No subscriptions. Buy a credit package when you need it.',
+        usp8_title: 'Simple and reliable',
+        usp8_text: 'A service built for situations where reliability matters more than features.',
+        privacy_title: 'The AI assistant that doesn\'t track you',
+        privacy_subtitle: 'No app. No cloud database. No location tracking.',
+        priv1_title: 'No background tracking',
+        priv1_text: 'No GPS tracking in the background. No analytics. No metadata collection.',
+        priv2_title: 'No permanent history',
+        priv2_text: 'Conversations deleted after 30 minutes. No chat logs saved in the cloud.',
+        priv3_title: 'No app to install',
+        priv3_text: 'Works via regular SMS. Nothing to download. No always-on service.',
+        priv4_title: 'No mobile data needed',
+        priv4_text: 'Works with satellite SMS devices like Garmin inReach. Only SMS coverage required.',
+        nokia_title: 'AI on your Nokia 3310.',
+        nokia_subtitle: 'You don\'t need a smartphone to use AI. Any phone with SMS works.',
+        nokia_point1: 'No smartphone needed',
+        nokia_point2: 'Only SMS function required',
+        nokia_point3: 'Perfect for minimalism & backup',
+        comp_feature: 'Feature',
+        comp_traditional: 'Traditional apps',
+        comp_row1: 'Requires app installation',
+        comp_row2: 'Background activity & tracking',
+        comp_row3: 'Saves conversation history',
+        comp_row4: 'Satellite SMS (Garmin inReach)',
+        comp_row5: 'Requires personal data',
+        no: 'No',
+        yes: 'Yes',
+        never: 'Never',
+        often: 'Often',
+        comp_30min: '30 min',
+        permanent: 'Permanent',
+        comp_phone_only: 'Phone number only',
+        comp_account_etc: 'Account, email, etc',
+        tier_starter: 'Starter',
+        tier_pro: 'Pro',
+        tier_premium: 'Premium',
+        currency: '',
+        messages: 'messages',
+        popular: 'Popular',
+        feat_weather: 'Weather forecasts',
+        feat_gps: 'GPS position',
+        feat_nearby: 'Nearby places',
+        feat_advice: 'Practical advice',
+        feat_starter_all: 'Everything in Starter',
+        feat_more_per_kr: 'More messages per dollar',
+        feat_longer: 'Longer answers when needed',
+        feat_trips: 'Perfect for longer trips',
+        feat_pro_all: 'Everything in Pro',
+        feat_best_price: 'Best price per message',
+        feat_professional: 'Perfect for professional use',
+        feat_invoice: 'Invoice upon request',
+        btn_buy_starter: 'Buy Starter',
+        btn_buy_pro: 'Buy Pro',
+        btn_buy_premium: 'Buy Premium',
+        how_it_works: 'How it works',
+        step1_title: '1. Scan the QR code',
+        step1_text: '– Text or scan the QR code to get started.',
+        step2_title: '2. Confirm your number',
+        step2_text: '– You\'ll receive an SMS. Reply "YES" to activate and get 3 free conversations to try.',
+        step3_title: '3. Try the service',
+        step3_text: '– Ask questions about weather, navigation, camping, or anything else. You have 3 free conversations.',
+        step4_title: '4. Buy credits when needed',
+        step4_text: '– When you like the service, buy a credit package that fits your needs.',
+        about_service: 'About the service',
+        pay_as_you_go_title: 'Pay only for what you use',
+        pay_as_you_go_text: '– Each SMS you send and receive costs one message from your balance. Buy more when you need it. No commitment. No recurring charges.',
+        example_questions_title: 'Example questions:',
+        example_questions_text: '"Weather next week" – "Where am I" – "Nearest pharmacy" – "Can I eat this mushroom"',
+        disclaimer_title: 'Responsibility and limitations',
+        disclaimer_text: 'WAVEE provides information based on available sources but does not replace professional advice or training. AI can make mistakes. Verify important information. Weather information is for guidance only. In case of emergency, always contact emergency services. Users are responsible for their own decisions in the field.',
+        faq_title: 'Frequently asked questions',
+        faq1_q: 'How does the service work?',
+        faq1_a: 'WAVEE is an AI assistant you reach via SMS. Scan the QR code or text us. Confirm with "YES" and you\'ll get 3 free conversations to try. Then you can buy a credit package when you want to continue using the service. Each conversation (question + answer) costs 1 credit from your balance.',
+        faq2_q: 'What information can I get?',
+        faq2_a1: 'You can choose from 8 different AI categories (outdoor, construction, gardening, travel, tech, cooking, health, finance). You get weather forecasts, GPS position, nearby places (trails, cabins, pharmacies, stores), and AI assistance within your chosen categories.',
+        image_analysis: 'Image analysis:',
+        faq2_a2: 'Send a picture via MMS and ask "Can I eat this mushroom?" or "What plant is this?". The AI analyzes the image and provides answers based on your selected categories.',
+        faq3_q: 'How many messages do I get for the money?',
+        faq3_a: '<strong>Starter:</strong> 30 messages – Perfect for testing the service or shorter trips.<br><strong>Pro:</strong> 100 messages – Suitable for longer trips and frequent use.<br><strong>Premium:</strong> 350 messages – Best price per message for professional use or intensive adventures.',
+        faq4_q: 'How do credits work?',
+        faq4_a: 'A complete conversation (your question + an AI answer) costs 1 credit. If you reply "MORE" for a longer answer, it counts as a new conversation (1 more credit). Weather and location searches are included in the conversation credit.',
+        faq5_q: 'Does the service work without internet?',
+        faq5_a: 'You need mobile network (GSM) to send and receive SMS, but not internet connection. If you have coverage for regular text messages, WAVEE works – even in areas without 4G/5G. Perfect for remote mountain areas where only SMS works.',
+        faq6_q: 'How accurate is the weather information?',
+        faq6_a: 'Weather data comes from reliable sources and is the same as many weather applications use. Forecasts are reliable for the next few days, but weather can change quickly, especially in mountains. Always use the information as guidance and be prepared for weather changes.',
+        faq7_q: 'Can I use the service abroad?',
+        faq7_a: 'Yes, you can send SMS from abroad, but roaming charges from your carrier may apply. WAVEE credits are valid regardless of your location, but check with your carrier what international SMS costs.',
+        faq8_q: 'How long are my credits valid?',
+        faq8_a: 'Your credits have no expiration date. They remain in your account until you use them. You can buy more credits anytime, and they will be added to your existing balance.',
+        faq9_q: 'What if I get an incorrect answer?',
+        faq9_a: 'AI systems can make mistakes. WAVEE provides information based on available sources and training data but does not replace professional advice or training. Always verify important information from multiple sources. In acute or emergency situations, always call emergency services.',
+        faq10_q: 'How do I cancel the service?',
+        faq10_a: 'There is no subscription to cancel – you only pay for the credits you buy. If you want to stop receiving messages from the system, text "STOP". Your remaining credits will be deleted. You can always come back later and buy new credits.',
+        faq11_q: 'Can I get a refund if I\'m not satisfied?',
+        faq11_a: 'Yes, if you haven\'t used any of your purchased credits, you can contact support within 14 days for a full refund. After you start using credits, no refunds are made, but you can always save remaining credits for future use.',
+        faq12_q: 'Is my data safe?',
+        faq12_a: 'We take data security very seriously. Conversations are deleted after 30 minutes. We don\'t save permanent chat history. Payments are handled by Stripe with bank-standard security. No background tracking, no analytics, no metadata collection.',
+        footer_copyright: '&copy; 2026 WAVEE. All rights reserved.',
+        footer_commands: 'Text "STOP" to cancel. "HELP" for support.',
+        modal_title: 'Enter your phone number',
+        modal_phone_label: 'Phone number (incl. country code)',
+        modal_phone_hint: 'Format: +1 followed by your phone number',
+        modal_continue: 'Continue to payment',
+        modal_cancel: 'Cancel'
+      }
+    };
+
+    // Detect browser language
+    function detectLanguage() {
+      const savedLang = localStorage.getItem('wavee_language');
+      if (savedLang) return savedLang;
+      
+      const browserLang = navigator.language || navigator.userLanguage;
+      return browserLang.startsWith('en') ? 'en' : 'sv';
+    }
+
+    // Set language
+    function setLanguage(lang) {
+      localStorage.setItem('wavee_language', lang);
+      
+      // Update active button
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      
+      // Update all text elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (translations[lang][key]) {
+          el.innerHTML = translations[lang][key];
+        }
+      });
+      
+      // Update pricing based on language
+      if (lang === 'en') {
+        // Update to USD pricing
+        document.querySelectorAll('.price-amount').forEach((el, index) => {
+          const amounts = ['9', '22', '55'];
+          el.textContent = '$' + amounts[index];
+        });
+        document.querySelectorAll('.currency').forEach(el => {
+          el.textContent = '';
+        });
+        document.querySelectorAll('.credit-amount').forEach((el, index) => {
+          const credits = ['30', '100', '350'];
+          el.textContent = credits[index];
+        });
+        
+        // Update demo GIF for English
+        const demoGif = document.getElementById('demoGif');
+        if (demoGif) {
+          demoGif.src = '/assets/english-gif.gif';
+        }
+      } else {
+        // Update to SEK pricing
+        document.querySelectorAll('.price-amount').forEach((el, index) => {
+          const amounts = ['79', '199', '499'];
+          el.textContent = amounts[index];
+        });
+        document.querySelectorAll('.currency').forEach(el => {
+          el.textContent = ' kr';
+        });
+        document.querySelectorAll('.credit-amount').forEach((el, index) => {
+          const credits = ['30', '100', '350'];
+          el.textContent = credits[index];
+        });
+        
+        // Update demo GIF for Swedish
+        const demoGif = document.getElementById('demoGif');
+        if (demoGif) {
+          demoGif.src = '/assets/aba513ce-d982-47fe-82ae-071420ea36f6.gif';
+        }
+      }
+      
+      // Update QR code
+      const phoneNumber = lang === 'en' ? '+13073183355' : '+46738631761';
+      const message = encodeURIComponent(translations[lang].qr_message);
+      const encodedPhone = encodeURIComponent(phoneNumber);
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=sms:${encodedPhone}?body=${message}`;
+      document.getElementById('qrCode').src = qrUrl;
+      
+      // Update phone display
+      document.getElementById('phoneDisplay').textContent = translations[lang].phone_number;
+      
+      // Update HTML lang attribute
+      document.documentElement.lang = lang;
+    }
+
+    // Initialize language on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = detectLanguage();
+      setLanguage(lang);
+    });
+
     let selectedTier = '';
 
     function openCheckout(tier) {
@@ -1057,19 +1468,27 @@
       e.preventDefault();
       
       const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const currentLang = localStorage.getItem('wavee_language') || 'sv';
       
       if (!phoneNumber.match(/^\+[1-9]\d{10,14}$/)) {
-        alert('Vänligen ange ett giltigt telefonnummer med landskod (t.ex. +46701234567)');
+        const errorMsg = currentLang === 'en' 
+          ? 'Please enter a valid phone number with country code (e.g. +16501234567)'
+          : 'Vänligen ange ett giltigt telefonnummer med landskod (t.ex. +46701234567)';
+        alert(errorMsg);
         return;
       }
 
       // Show loading state
       const submitBtn = e.target.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
-      submitBtn.textContent = 'Skapar betalning...';
+      const loadingText = currentLang === 'en' ? 'Creating payment...' : 'Skapar betalning...';
+      submitBtn.textContent = loadingText;
       submitBtn.disabled = true;
 
       try {
+        // Get current language
+        const currentLang = localStorage.getItem('wavee_language') || 'sv';
+        
         // Create checkout session
         const response = await fetch('/api/checkout', {
           method: 'POST',
@@ -1079,6 +1498,7 @@
           body: JSON.stringify({
             phoneNumber,
             tier: selectedTier,
+            language: currentLang,
           }),
         });
 
@@ -1092,7 +1512,11 @@
         window.location.href = data.url;
       } catch (error) {
         console.error('Checkout error:', error);
-        alert('Ett fel uppstod. Försök igen.');
+        const currentLang = localStorage.getItem('wavee_language') || 'sv';
+        const errorMsg = currentLang === 'en' 
+          ? 'An error occurred. Please try again.'
+          : 'Ett fel uppstod. Försök igen.';
+        alert(errorMsg);
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
       }

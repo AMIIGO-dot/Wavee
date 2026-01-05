@@ -1,6 +1,6 @@
 import Stripe from 'stripe';
 import { UserService } from './userService';
-import { PRICING_TIERS, getCreditsForTier } from '../config/pricing';
+import { PRICING_TIERS_SEK, PRICING_TIERS_USD, getPricingTiersForLanguage, getCreditsForTier } from '../config/pricing';
 
 export interface CheckoutSession {
   sessionId: string;
@@ -29,11 +29,14 @@ export class StripeService {
    */
   async createCheckoutSession(
     phoneNumber: string,
-    tierId: 'basic' | 'pro' | 'unlimited',
+    tierId: 'starter' | 'pro' | 'premium',
     successUrl: string,
-    cancelUrl: string
+    cancelUrl: string,
+    language: 'sv' | 'en' = 'sv'
   ): Promise<CheckoutSession> {
-    const tier = PRICING_TIERS.find(t => t.id === tierId);
+    // Get pricing tiers for the user's language
+    const pricingTiers = getPricingTiersForLanguage(language);
+    const tier = pricingTiers.find(t => t.id === tierId);
 
     if (!tier) {
       throw new Error('Invalid pricing tier');
@@ -42,7 +45,10 @@ export class StripeService {
     console.log('[STRIPE] Creating checkout session:', {
       phone: phoneNumber,
       tier: tierId,
+      language: language,
       price: tier.price,
+      currency: tier.currency,
+      credits: tier.credits,
     });
 
     // Check if user already has a Stripe customer
@@ -66,18 +72,22 @@ export class StripeService {
     }
 
     // Create checkout session
+    const productName = language === 'en' 
+      ? `${tier.name} - ${tier.credits} messages`
+      : `${tier.name} - ${tier.credits} meddelanden`;
+    
     const session = await this.stripe.checkout.sessions.create({
       customer: customerId,
       mode: 'payment',
       line_items: [
         {
           price_data: {
-            currency: 'sek',
+            currency: tier.currency,
             product_data: {
-              name: `${tier.name} - ${tier.credits} meddelanden`,
+              name: productName,
               description: tier.features.join(', '),
             },
-            unit_amount: tier.price * 100, // Convert to öre (SEK cents)
+            unit_amount: tier.price * 100, // Convert to cents (SEK öre or USD cents)
           },
           quantity: 1,
         },
@@ -88,6 +98,8 @@ export class StripeService {
         phone_number: phoneNumber,
         pricing_tier: tierId,
         credits: tier.credits.toString(),
+        language: language,
+        currency: tier.currency,
       },
     });
 

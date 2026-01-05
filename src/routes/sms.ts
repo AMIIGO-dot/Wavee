@@ -95,13 +95,22 @@ router.post('/incoming', async (req: Request, res: Response) => {
       return res.status(200).send('OK');
     }
 
-    // Get user's language (use stored preference, fallback to detected)
-    const userLanguage = await userService.getLanguage(phoneNumber);
+    // Always use the language based on which number they're messaging
+    // This allows users to switch between Swedish and English numbers freely
+    const userLanguage = detectedLanguage;
+    const language = userLanguage; // Use for all message handling
     
-    // Update Twilio number if changed
+    // Update database to keep it in sync
     const user = await userService.getUser(phoneNumber);
-    if (user && user.twilio_number !== twilioNumber) {
-      await userService.setTwilioNumber(phoneNumber, twilioNumber);
+    if (user) {
+      if (user.twilio_number !== twilioNumber) {
+        await userService.setTwilioNumber(phoneNumber, twilioNumber);
+        console.log(`[SMS] User ${phoneNumber} switched to ${twilioNumber}`);
+      }
+      if (user.language !== detectedLanguage) {
+        await userService.setLanguage(phoneNumber, detectedLanguage);
+        console.log(`[SMS] User ${phoneNumber} language updated to ${detectedLanguage}`);
+      }
     }
 
     // Check if user is pending activation
@@ -141,7 +150,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
     // Check rate limits
     const rateLimit = rateLimiter.checkLimits(phoneNumber);
     if (!rateLimit.allowed) {
-      await twilioService.sendSMS(phoneNumber, rateLimit.reason!);
+      await twilioService.sendSMS(phoneNumber, rateLimit.reason!, userLanguage);
       console.log(`[RATE LIMIT] Blocked message from ${phoneNumber}: ${rateLimit.reason}`);
       return res.status(200).send('OK');
     }
@@ -170,7 +179,7 @@ async function handleActiveUserMessage(
     // Check for image first (can be sent without text)
     if (mediaUrl && mediaType?.startsWith('image/')) {
       console.log(`[IMAGE] Processing image from ${phoneNumber}`);
-      await handleImageAnalysis(phoneNumber, mediaUrl, messageBody || 'What is this?');
+      await handleImageAnalysis(phoneNumber, mediaUrl, messageBody || 'What is this?', language);
       return;
     }
 
@@ -255,7 +264,7 @@ async function handleActiveUserMessage(
     // Check credits before responding
     const hasCredits = await userService.hasCredits(phoneNumber, 1);
     if (!hasCredits) {
-      await handleNoCredits(phoneNumber);
+      await handleNoCredits(phoneNumber, language);
       return;
     }
 
@@ -270,7 +279,8 @@ async function handleActiveUserMessage(
       messageBody,
       context.messages,
       context.lastAiResponse,
-      userCategories
+      userCategories,
+      language
     );
 
     // Update session with new message and response
@@ -281,7 +291,7 @@ async function handleActiveUserMessage(
     await userService.logTransaction(phoneNumber, 'usage', -1, 'AI conversation');
 
     // Send response via SMS
-    await twilioService.sendSMS(phoneNumber, aiResponse);
+    await twilioService.sendSMS(phoneNumber, aiResponse, language);
 
     console.log(`[SMS] Response sent to ${phoneNumber}`);
   } catch (error) {
@@ -347,13 +357,14 @@ async function handleMoreCommand(phoneNumber: string, language: 'sv' | 'en' = 's
 async function handleImageAnalysis(
   phoneNumber: string,
   imageUrl: string,
-  userQuestion: string
+  userQuestion: string,
+  language: 'sv' | 'en' = 'sv'
 ): Promise<void> {
   try {
     // Check credits before analyzing
     const hasCredits = await userService.hasCredits(phoneNumber, 1);
     if (!hasCredits) {
-      await handleNoCredits(phoneNumber);
+      await handleNoCredits(phoneNumber, language);
       return;
     }
 
@@ -366,7 +377,8 @@ async function handleImageAnalysis(
     const aiResponse = await aiService.analyzeImage(
       imageUrl,
       userQuestion,
-      userCategories
+      userCategories,
+      language
     );
 
     // Update session with new message and response
@@ -377,15 +389,15 @@ async function handleImageAnalysis(
     await userService.logTransaction(phoneNumber, 'usage', -1, 'AI conversation (image analysis)');
 
     // Send response
-    await twilioService.sendSMS(phoneNumber, aiResponse);
+    await twilioService.sendSMS(phoneNumber, aiResponse, language);
     console.log(`[IMAGE] Analysis sent to ${phoneNumber}`);
   } catch (error) {
     console.error('[IMAGE] Error analyzing image:', error);
     
-    await twilioService.sendSMS(
-      phoneNumber,
-      'Unable to analyze image. Please try again or send a text question.'
-    );
+    const errorMsg = language === 'en'
+      ? 'Unable to analyze image. Please try again or send a text question.'
+      : 'Kunde inte analysera bilden. Försök igen eller skicka en textfråga.';
+    await twilioService.sendSMS(phoneNumber, errorMsg, language);
   }
 }
 

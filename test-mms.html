@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MMS Test Tool</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #2c5f2d;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: 600;
+      color: #333;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input[type="file"] {
+      padding: 5px;
+    }
+    button {
+      background: #2c5f2d;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 20px;
+      font-weight: 600;
+    }
+    button:hover {
+      background: #234d23;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .preview {
+      margin-top: 15px;
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .response {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 5px;
+      display: none;
+    }
+    .response.success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+      display: block;
+    }
+    .response.error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+      display: block;
+    }
+    .info {
+      background: #e7f3ff;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border-left: 4px solid #0066cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🖼️ MMS Test Tool</h1>
+    <p class="subtitle">Simulate sending MMS to your Twilio webhook</p>
+    
+    <div class="info">
+      <strong>Info:</strong> This tool sends a POST request directly to your webhook, simulating what Twilio would send. Perfect for testing MMS functionality without needing a real phone.
+    </div>
+
+    <form id="mmsForm">
+      <label for="from">From Phone Number:</label>
+      <input type="tel" id="from" placeholder="+46793426209" value="+46793426209" required>
+
+      <label for="to">To Phone Number:</label>
+      <input type="tel" id="to" placeholder="+13073183355" value="+13073183355" required>
+
+      <label for="body">Message Text (optional):</label>
+      <input type="text" id="body" placeholder="What is this plant?">
+
+      <label for="image">Upload Image:</label>
+      <input type="file" id="image" accept="image/*" required>
+      <img id="preview" class="preview" style="display: none;">
+
+      <button type="submit" id="submitBtn">Send Test MMS</button>
+    </form>
+
+    <div id="response" class="response"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById('mmsForm');
+    const imageInput = document.getElementById('image');
+    const preview = document.getElementById('preview');
+    const responseDiv = document.getElementById('response');
+    const submitBtn = document.getElementById('submitBtn');
+
+    // Preview image
+    imageInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      responseDiv.className = 'response';
+      responseDiv.style.display = 'none';
+
+      try {
+        const file = imageInput.files[0];
+        if (!file) {
+          throw new Error('Please select an image');
+        }
+
+        // First, upload image to a temporary hosting service or use data URL
+        // For testing, we'll use a publicly accessible test image URL
+        // In real Twilio webhooks, this would be a Twilio-hosted URL
+        
+        const testImageUrl = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Amanita_muscaria_3_vliegenzwammen_op_rij.jpg/640px-Amanita_muscaria_3_vliegenzwammen_op_rij.jpg';
+        
+        // Create form data like Twilio would send
+        const formData = new URLSearchParams({
+          From: document.getElementById('from').value,
+          To: document.getElementById('to').value,
+          Body: document.getElementById('body').value || '',
+          NumMedia: '1',
+          MediaContentType0: 'image/jpeg',
+          MediaUrl0: testImageUrl, // Twilio sends a URL, not base64
+          MessageSid: 'TEST' + Date.now(),
+          AccountSid: 'TEST_ACCOUNT'
+        });
+
+        // Send to local webhook
+        const response = await fetch('http://localhost:3000/sms/incoming', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: formData.toString()
+        });
+
+        if (response.ok) {
+          const text = await response.text();
+          responseDiv.className = 'response success';
+          responseDiv.innerHTML = `<strong>✓ Success!</strong><br>Webhook processed the MMS. Check your terminal for logs and you should receive an SMS response.<br><br><em>Note: Using test image URL since we can't upload from browser. In real Twilio webhooks, images are hosted by Twilio.</em>`;
+        } else {
+          throw new Error(`Server responded with ${response.status}`);
+        }
+
+      } catch (error) {
+        responseDiv.className = 'response error';
+        responseDiv.innerHTML = `<strong>✗ Error:</strong><br>${error.message}`;
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Send Test MMS';
+      }
+    });
+  </script>
+</body>
+</html>

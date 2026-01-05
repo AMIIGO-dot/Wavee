@@ -14,11 +14,18 @@ router.post('/checkout', async (req: Request, res: Response) => {
       STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET ? 'SET' : 'NOT SET',
     });
 
-    const { phoneNumber, tier } = req.body;
+    const { phoneNumber, tier, language } = req.body;
+
+    console.log('[CHECKOUT] Request body:', { phoneNumber, tier, language });
 
     if (!phoneNumber || !tier) {
       return res.status(400).json({ error: 'Missing phoneNumber or tier' });
     }
+    
+    // Default to Swedish if language not provided
+    const userLanguage = language === 'en' ? 'en' : 'sv';
+    
+    console.log('[CHECKOUT] Using language:', userLanguage);
 
     if (!['starter', 'pro', 'premium'].includes(tier)) {
       return res.status(400).json({ error: 'Invalid tier' });
@@ -36,7 +43,8 @@ router.post('/checkout', async (req: Request, res: Response) => {
       phoneNumber,
       tier,
       `${baseUrl}/success.html`,
-      `${baseUrl}/`
+      `${baseUrl}/`,
+      userLanguage
     );
 
     console.log('[CHECKOUT] Session created:', {
