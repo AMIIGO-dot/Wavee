@@ -45,6 +45,21 @@
     .language-switcher button:hover:not(.active) {
       background: #e5e5e7;
     }
+
+    .beta-pill {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #1d1d1f;
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
   
   <style>
     * {
@@ -729,6 +744,7 @@
   </style>
 </head>
 <body>
+  <div class="beta-pill">BETA</div>
   <div class="container">
     <header>
       <!-- TEMPORARY: Language switcher hidden until English number is ready -->
