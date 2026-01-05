@@ -54,24 +54,30 @@ router.post('/incoming', async (req: Request, res: Response) => {
   try {
     initServices(); // Initialize services on first request
     
-    const { From, Body, NumMedia, MediaUrl0, MediaContentType0 } = req.body;
+    const { From, To, Body, NumMedia, MediaUrl0, MediaContentType0 } = req.body;
 
-    if (!From) {
-      console.error('[SMS] Missing From field:', req.body);
+    if (!From || !To) {
+      console.error('[SMS] Missing From or To field:', req.body);
       return res.status(400).send('Missing required fields');
     }
 
     const phoneNumber = normalizePhoneNumber(From);
+    const twilioNumber = normalizePhoneNumber(To);
     const messageBody = Body ? sanitizeInput(Body) : '';
     const hasMedia = parseInt(NumMedia || '0') > 0;
     const mediaUrl = hasMedia ? MediaUrl0 : null;
     const mediaType = hasMedia ? MediaContentType0 : null;
 
+    // Detect language based on which Twilio number received the message
+    const detectedLanguage: 'sv' | 'en' = twilioNumber.startsWith('+46') ? 'sv' : 'en';
+
     console.log('[SMS] Incoming message:', {
       from: phoneNumber,
+      to: twilioNumber,
       body: messageBody,
       hasMedia,
       mediaType,
+      detectedLanguage,
       timestamp: new Date().toISOString(),
     });
 
@@ -80,10 +86,22 @@ router.post('/incoming', async (req: Request, res: Response) => {
 
     if (!userExists) {
       // New user - create and send opt-in message
-      await userService.createUser(phoneNumber);
-      await twilioService.sendOptInMessage(phoneNumber);
+      await userService.createUser(phoneNumber, {
+        language: detectedLanguage,
+        twilio_number: twilioNumber,
+      });
+      await twilioService.sendOptInMessage(phoneNumber, detectedLanguage);
       
       return res.status(200).send('OK');
+    }
+
+    // Get user's language (use stored preference, fallback to detected)
+    const userLanguage = await userService.getLanguage(phoneNumber);
+    
+    // Update Twilio number if changed
+    const user = await userService.getUser(phoneNumber);
+    if (user && user.twilio_number !== twilioNumber) {
+      await userService.setTwilioNumber(phoneNumber, twilioNumber);
     }
 
     // Check if user is pending activation
@@ -100,12 +118,12 @@ router.post('/incoming', async (req: Request, res: Response) => {
         await userService.addCredits(phoneNumber, FREE_TRIAL_CREDITS);
         await userService.logTransaction(phoneNumber, 'purchase', FREE_TRIAL_CREDITS, 'Free trial credits');
         
-        await twilioService.sendActivationMessage(phoneNumber);
+        await twilioService.sendActivationMessage(phoneNumber, userLanguage);
         
         console.log(`[SMS] User ${phoneNumber} activated with consent logged and ${FREE_TRIAL_CREDITS} free credits`);
       } else {
         // Remind them to reply YES
-        await twilioService.sendOptInMessage(phoneNumber);
+        await twilioService.sendOptInMessage(phoneNumber, userLanguage);
       }
       
       return res.status(200).send('OK');
@@ -116,7 +134,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
 
     if (!isActive) {
       // User is inactive - send opt-in again
-      await twilioService.sendOptInMessage(phoneNumber);
+      await twilioService.sendOptInMessage(phoneNumber, userLanguage);
       return res.status(200).send('OK');
     }
 
@@ -129,7 +147,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
     }
 
     // Active user - process the message
-    await handleActiveUserMessage(phoneNumber, messageBody, mediaUrl, mediaType);
+    await handleActiveUserMessage(phoneNumber, messageBody, mediaUrl, mediaType, userLanguage);
 
     res.status(200).send('OK');
   } catch (error) {
@@ -145,7 +163,8 @@ async function handleActiveUserMessage(
   phoneNumber: string,
   messageBody: string,
   mediaUrl: string | null = null,
-  mediaType: string | null = null
+  mediaType: string | null = null,
+  language: 'sv' | 'en' = 'sv'
 ): Promise<void> {
   try {
     // Check for image first (can be sent without text)
@@ -163,13 +182,13 @@ async function handleActiveUserMessage(
 
     // Check for STOP command
     if (isStopCommand(messageBody)) {
-      await handleStopCommand(phoneNumber);
+      await handleStopCommand(phoneNumber, language);
       return;
     }
 
     // Check for HELP command
     if (isHelpCommand(messageBody)) {
-      await handleHelpCommand(phoneNumber);
+      await handleHelpCommand(phoneNumber, language);
       return;
     }
 
@@ -177,19 +196,19 @@ async function handleActiveUserMessage(
     const parsedLocation = gpsService.parseLocation(messageBody);
     
     if (parsedLocation) {
-      await handleGPSMessage(phoneNumber, parsedLocation, messageBody);
+      await handleGPSMessage(phoneNumber, parsedLocation, messageBody, language);
       return;
     }
 
     // Check if this is a place search query (e.g., "nearest gas station")
-    const placeSearchResult = await handlePlaceSearch(phoneNumber, messageBody);
+    const placeSearchResult = await handlePlaceSearch(phoneNumber, messageBody, language);
     if (placeSearchResult) {
       return;
     }
 
     // Check if this is a WHERE AM I command
     if (isLocationQueryCommand(messageBody)) {
-      await handleLocationQuery(phoneNumber);
+      await handleLocationQuery(phoneNumber, language);
       return;
     }
 
@@ -198,11 +217,11 @@ async function handleActiveUserMessage(
       // Check credits before responding
       const hasCredits = await userService.hasCredits(phoneNumber, 1);
       if (!hasCredits) {
-        await handleNoCredits(phoneNumber);
+        await handleNoCredits(phoneNumber, language);
         return;
       }
       
-      await handleMoreCommand(phoneNumber);
+      await handleMoreCommand(phoneNumber, language);
       
       // Deduct 1 credit for expanded response
       await userService.deductCredits(phoneNumber, 1);
@@ -217,7 +236,7 @@ async function handleActiveUserMessage(
       // Check credits before responding
       const hasCredits = await userService.hasCredits(phoneNumber, 1);
       if (!hasCredits) {
-        await handleNoCredits(phoneNumber);
+        await handleNoCredits(phoneNumber, language);
         return;
       }
       
@@ -228,7 +247,7 @@ async function handleActiveUserMessage(
       // Update session so MORE command works
       await sessionService.updateSession(phoneNumber, messageBody, weatherResponse);
       
-      await twilioService.sendSMS(phoneNumber, weatherResponse);
+      await twilioService.sendSMS(phoneNumber, weatherResponse, language);
       console.log(`[WEATHER] Natural language forecast sent to ${phoneNumber}`);
       return;
     }
@@ -279,7 +298,7 @@ async function handleActiveUserMessage(
 /**
  * Handle MORE command to expand previous response
  */
-async function handleMoreCommand(phoneNumber: string): Promise<void> {
+async function handleMoreCommand(phoneNumber: string, language: 'sv' | 'en' = 'sv'): Promise<void> {
   try {
     // Get session context
     const context = await sessionService.getContext(phoneNumber);
@@ -373,7 +392,7 @@ async function handleImageAnalysis(
 /**
  * Handle WHERE AM I command - return saved location
  */
-async function handleLocationQuery(phoneNumber: string): Promise<void> {
+async function handleLocationQuery(phoneNumber: string, language: 'sv' | 'en' = 'sv'): Promise<void> {
   try {
     const lastLocation = await sessionService.getLastLocation(phoneNumber);
 
@@ -419,12 +438,16 @@ async function handleLocationQuery(phoneNumber: string): Promise<void> {
 /**
  * Handle STOP command - deactivate user
  */
-async function handleStopCommand(phoneNumber: string): Promise<void> {
+async function handleStopCommand(phoneNumber: string, language: 'sv' | 'en' = 'sv'): Promise<void> {
   try {
     await userService.deactivateUser(phoneNumber);
     
-    const message = 'Du har avregistrerats. Tack för att du använt Outdoor SMS Assistant. För att aktivera igen, besök vår hemsida och köp ett nytt paket.';
-    await twilioService.sendSMS(phoneNumber, message);
+    const messages = {
+      sv: 'Du har avregistrerats. Tack for att du anvant WAVEE. For att aktivera igen, besok var hemsida och kop ett nytt paket.',
+      en: 'You have been unsubscribed. Thank you for using WAVEE. To reactivate, visit our website and purchase a new package.'
+    };
+    
+    await twilioService.sendSMS(phoneNumber, messages[language], language);
     
     console.log(`[STOP] User deactivated: ${phoneNumber}`);
   } catch (error) {
@@ -435,27 +458,17 @@ async function handleStopCommand(phoneNumber: string): Promise<void> {
 /**
  * Handle HELP command - send usage info
  */
-async function handleHelpCommand(phoneNumber: string): Promise<void> {
+async function handleHelpCommand(phoneNumber: string, language: 'sv' | 'en' = 'sv'): Promise<void> {
   try {
     const user = await userService.getUser(phoneNumber);
     const credits = user?.credits_remaining || 0;
     
-    const message = `📱 Outdoor SMS Assistant
+    const messages = {
+      sv: `WAVEE SMS Assistant\n\nDitt saldo: ${credits} meddelanden\n\nExempel pa fragor:\n- Vad blir det for vader i Stockholm imorgon?\n- Dela GPS-position + narmaste sjukhus\n- Hur overlever jag i snostorm?\n\nKommandon:\n- STOP - Avregistrera\n- HELP - Denna hjalp\n\nSupport: wavee.app`,
+      en: `WAVEE SMS Assistant\n\nYour balance: ${credits} messages\n\nExample questions:\n- What's the weather in Seattle tomorrow?\n- Share GPS-position + nearest hospital\n- How to survive a snowstorm?\n\nCommands:\n- STOP - Unsubscribe\n- HELP - This help\n\nSupport: wavee.app`
+    };
 
-Ditt saldo: ${credits} meddelanden
-
-Exempel på frågor:
-• "Vad blir det för väder i Stockholm imorgon?"
-• Dela GPS-position + "närmaste sjukhus"
-• "Hur överlever jag i snöstorm?"
-
-Kommandon:
-• STOP - Avregistrera
-• HELP - Denna hjälp
-
-Support: outdoor-assistant.com`;
-
-    await twilioService.sendSMS(phoneNumber, message);
+    await twilioService.sendSMS(phoneNumber, messages[language], language);
     
     console.log(`[HELP] Help sent to: ${phoneNumber}`);
   } catch (error) {
@@ -466,23 +479,17 @@ Support: outdoor-assistant.com`;
 /**
  * Handle no credits situation
  */
-async function handleNoCredits(phoneNumber: string): Promise<void> {
+async function handleNoCredits(phoneNumber: string, language: 'sv' | 'en' = 'sv'): Promise<void> {
   try {
     const user = await userService.getUser(phoneNumber);
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
     
-    const message = `❌ Du har inga credits kvar!
+    const messages = {
+      sv: `Du har inga credits kvar!\n\nDitt saldo: ${user?.credits_remaining || 0} meddelanden\n\nKop fler pa: ${baseUrl}\n\nPaket:\n- Starter: 30 meddelanden - 79 kr\n- Pro: 100 meddelanden - 199 kr\n- Premium: 350 meddelanden - 499 kr`,
+      en: `You're out of credits!\n\nYour balance: ${user?.credits_remaining || 0} messages\n\nBuy more at: ${baseUrl}\n\nPackages:\n- Starter: 30 messages - $9\n- Pro: 100 messages - $22\n- Premium: 350 messages - $55`
+    };
 
-Ditt saldo: ${user?.credits_remaining || 0} meddelanden
-
-Köp fler på: ${baseUrl}
-
-Paket:
-• Basic - 50 meddelanden - 49 kr
-• Pro - 200 meddelanden - 149 kr
-• Unlimited - Obegränsat - 399 kr`;
-
-    await twilioService.sendSMS(phoneNumber, message);
+    await twilioService.sendSMS(phoneNumber, messages[language], language);
     
     console.log(`[NO CREDITS] Notice sent to: ${phoneNumber}`);
   } catch (error) {
@@ -535,7 +542,8 @@ async function handleWeatherCommand(
 async function handleGPSMessage(
   phoneNumber: string,
   location: any,
-  originalMessage: string
+  originalMessage: string,
+  language: 'sv' | 'en' = 'sv'
 ): Promise<void> {
   try {
     const { coordinates } = location;
@@ -616,7 +624,8 @@ async function handleGPSMessage(
  */
 async function handlePlaceSearch(
   phoneNumber: string,
-  messageBody: string
+  messageBody: string,
+  language: 'sv' | 'en' = 'sv'
 ): Promise<boolean> {
   try {
     // Check if this looks like a place search query

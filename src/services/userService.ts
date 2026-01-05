@@ -21,13 +21,17 @@ export class UserService {
     google_id?: string;
     email?: string;
     status?: 'pending' | 'active' | 'inactive';
+    language?: 'sv' | 'en';
+    twilio_number?: string;
   }): Promise<void> {
     const status = options?.status || 'pending';
+    const language = options?.language || 'sv';
+    const twilioNumber = options?.twilio_number || null;
     await this.db.run(
-      'INSERT INTO users (phone_number, status, password_hash, google_id, email) VALUES (?, ?, ?, ?, ?)',
-      [phoneNumber, status, options?.password_hash || null, options?.google_id || null, options?.email || null]
+      'INSERT INTO users (phone_number, status, password_hash, google_id, email, language, twilio_number) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [phoneNumber, status, options?.password_hash || null, options?.google_id || null, options?.email || null, language, twilioNumber]
     );
-    console.log(`[USER] Created new ${status} user: ${phoneNumber}`);
+    console.log(`[USER] Created new ${status} user: ${phoneNumber} (language: ${language})`);
   }
 
   /**
@@ -273,5 +277,34 @@ export class UserService {
     };
     
     return tierLimits[user.pricing_tier] || 1;
+  }
+
+  /**
+   * Set user's preferred language
+   */
+  async setLanguage(phoneNumber: string, language: 'sv' | 'en'): Promise<void> {
+    await this.db.run(
+      'UPDATE users SET language = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
+      [language, phoneNumber]
+    );
+    console.log(`[USER] Set language for ${phoneNumber}: ${language}`);
+  }
+
+  /**
+   * Get user's preferred language
+   */
+  async getLanguage(phoneNumber: string): Promise<'sv' | 'en'> {
+    const user = await this.getUser(phoneNumber);
+    return user?.language || 'sv';
+  }
+
+  /**
+   * Set user's Twilio number (which number they messaged)
+   */
+  async setTwilioNumber(phoneNumber: string, twilioNumber: string): Promise<void> {
+    await this.db.run(
+      'UPDATE users SET twilio_number = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
+      [twilioNumber, phoneNumber]
+    );
   }
 }

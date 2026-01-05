@@ -15,6 +15,8 @@ export interface User {
   email?: string;
   ai_tone: 'casual' | 'professional' | 'friendly';
   selected_categories?: string; // JSON array of category IDs
+  language?: 'sv' | 'en'; // User's preferred language (Swedish or English)
+  twilio_number?: string; // The Twilio number user interacts with (+46 or +1)
   created_at: string;
   updated_at: string;
 }
@@ -97,7 +99,7 @@ class Database {
       });
 
       // Migration: Add billing and auth columns to users table
-      const billingColumns = ['credits_remaining', 'stripe_customer_id', 'pricing_tier', 'consent_timestamp', 'password_hash', 'google_id', 'email', 'ai_tone', 'selected_categories'];
+      const billingColumns = ['credits_remaining', 'stripe_customer_id', 'pricing_tier', 'consent_timestamp', 'password_hash', 'google_id', 'email', 'ai_tone', 'selected_categories', 'language', 'twilio_number'];
       billingColumns.forEach(column => {
         this.db.get(`
           SELECT COUNT(*) as count FROM pragma_table_info('users') WHERE name='${column}'
@@ -110,6 +112,8 @@ class Database {
               alteration = `ALTER TABLE users ADD COLUMN ${column} TEXT NOT NULL DEFAULT 'friendly'`;
             } else if (column === 'selected_categories') {
               alteration = `ALTER TABLE users ADD COLUMN ${column} TEXT DEFAULT '["outdoor"]'`;
+            } else if (column === 'language') {
+              alteration = `ALTER TABLE users ADD COLUMN ${column} TEXT DEFAULT 'sv'`;
             } else {
               alteration = `ALTER TABLE users ADD COLUMN ${column} TEXT`;
             }
