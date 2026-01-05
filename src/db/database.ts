@@ -45,6 +45,14 @@ class Database {
   private db: sqlite3.Database;
 
   constructor(dbPath: string = './outdoor-assistant.db') {
+    // In production (Railway), use persistent volume if available
+    if (process.env.NODE_ENV === 'production' && process.env.DATABASE_PATH) {
+      dbPath = process.env.DATABASE_PATH;
+      console.log('[DATABASE] Using persistent storage:', dbPath);
+    } else {
+      console.log('[DATABASE] Using local storage:', dbPath);
+    }
+    
     this.db = new sqlite.Database(dbPath);
     this.initialize();
   }
