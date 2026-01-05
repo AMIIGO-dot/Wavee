@@ -130,10 +130,17 @@ class Database {
   }
 
   // Promisified methods for cleaner async/await usage
+  // Convert SQLite-style ? placeholders to PostgreSQL $1, $2, $3
+  private convertPlaceholders(sql: string): string {
+    let index = 1;
+    return sql.replace(/\?/g, () => `$${index++}`);
+  }
+
   public async run(sql: string, params: any[] = []): Promise<void> {
     const client = await this.pool.connect();
     try {
-      await client.query(sql, params);
+      const pgSql = this.convertPlaceholders(sql);
+      await client.query(pgSql, params);
     } finally {
       client.release();
     }
@@ -142,7 +149,8 @@ class Database {
   public async get<T>(sql: string, params: any[] = []): Promise<T | undefined> {
     const client = await this.pool.connect();
     try {
-      const result = await client.query(sql, params);
+      const pgSql = this.convertPlaceholders(sql);
+      const result = await client.query(pgSql, params);
       return result.rows[0] as T | undefined;
     } finally {
       client.release();
@@ -152,7 +160,8 @@ class Database {
   public async all<T>(sql: string, params: any[] = []): Promise<T[]> {
     const client = await this.pool.connect();
     try {
-      const result = await client.query(sql, params);
+      const pgSql = this.convertPlaceholders(sql);
+      const result = await client.query(pgSql, params);
       return result.rows as T[];
     } finally {
       client.release();
