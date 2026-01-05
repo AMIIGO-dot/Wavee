@@ -338,11 +338,11 @@ export class UserService {
     systemPrompt: string
   ): Promise<number> {
     const result = await this.db.run(
-      'INSERT INTO custom_agents (phone_number, name, description, system_prompt) VALUES (?, ?, ?, ?)',
+      'INSERT INTO custom_agents (phone_number, name, description, system_prompt) VALUES (?, ?, ?, ?) RETURNING id',
       [phoneNumber, name, description, systemPrompt]
     );
     console.log(`[USER] Created custom agent for ${phoneNumber}: ${name}`);
-    return result.lastID!;
+    return result.lastID || 0;
   }
 
   /**

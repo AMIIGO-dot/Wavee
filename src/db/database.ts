@@ -14,6 +14,7 @@ export interface User {
   selected_categories?: string; // JSON array of category IDs
   language?: 'sv' | 'en'; // User's preferred language (Swedish or English)
   twilio_number?: string; // The Twilio number user interacts with (+46 or +1)
+  active_agent_id?: number; // ID of active custom agent
   created_at: string;
   updated_at: string;
 }
@@ -157,11 +158,18 @@ class Database {
     return sql.replace(/\?/g, () => `$${index++}`);
   }
 
-  public async run(sql: string, params: any[] = []): Promise<void> {
+  public async run(sql: string, params: any[] = []): Promise<{ lastID?: number }> {
     const client = await this.pool.connect();
     try {
       const pgSql = this.convertPlaceholders(sql);
-      await client.query(pgSql, params);
+      const result = await client.query(pgSql, params);
+      
+      // For INSERT statements, try to get the last inserted ID
+      if (sql.trim().toUpperCase().startsWith('INSERT') && result.rows.length > 0 && result.rows[0].id) {
+        return { lastID: result.rows[0].id };
+      }
+      
+      return {};
     } finally {
       client.release();
     }
