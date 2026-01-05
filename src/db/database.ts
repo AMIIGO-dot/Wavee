@@ -78,6 +78,7 @@ class Database {
           selected_categories TEXT DEFAULT '["outdoor"]',
           language TEXT DEFAULT 'sv',
           twilio_number TEXT,
+          active_agent_id INTEGER,
           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
           updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
         )
@@ -111,6 +112,21 @@ class Database {
         )
       `);
 
+      // Custom agents table
+      await this.run(`
+        CREATE TABLE IF NOT EXISTS custom_agents (
+          id SERIAL PRIMARY KEY,
+          phone_number TEXT NOT NULL,
+          name VARCHAR(100) NOT NULL,
+          description TEXT,
+          system_prompt TEXT NOT NULL,
+          active BOOLEAN DEFAULT false,
+          created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          FOREIGN KEY (phone_number) REFERENCES users(phone_number) ON DELETE CASCADE
+        )
+      `);
+
       // Indexes (PostgreSQL doesn't support DESC in CREATE INDEX directly)
       await this.run(`
         CREATE INDEX IF NOT EXISTS idx_transactions_phone 
@@ -120,6 +136,11 @@ class Database {
       await this.run(`
         CREATE INDEX IF NOT EXISTS idx_sessions_phone 
         ON sessions(phone_number, updated_at)
+      `);
+
+      await this.run(`
+        CREATE INDEX IF NOT EXISTS idx_custom_agents_phone 
+        ON custom_agents(phone_number, created_at)
       `);
 
       console.log('[DATABASE] Tables initialized successfully');

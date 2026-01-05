@@ -157,4 +157,206 @@ router.patch('/categories', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * GET /api/account/agents
+ * Get all custom agents for the current user
+ */
+router.get('/agents', async (req: Request, res: Response) => {
+  try {
+    const userService = new UserService();
+    const agents = await userService.getCustomAgents(req.user.phone_number);
+    
+    res.json({ agents });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error fetching custom agents:', error);
+    res.status(500).json({ error: 'Failed to fetch custom agents' });
+  }
+});
+
+/**
+ * POST /api/account/agents
+ * Create a new custom agent
+ */
+router.post('/agents', async (req: Request, res: Response) => {
+  try {
+    const { name, description, systemPrompt } = req.body;
+
+    if (!name || !systemPrompt) {
+      return res.status(400).json({ error: 'Name and system prompt are required' });
+    }
+
+    if (name.length > 100) {
+      return res.status(400).json({ error: 'Name must be 100 characters or less' });
+    }
+
+    if (systemPrompt.length > 2000) {
+      return res.status(400).json({ error: 'System prompt must be 2000 characters or less' });
+    }
+
+    const userService = new UserService();
+    
+    // Check agent limit based on pricing tier
+    const user = await userService.getUser(req.user.phone_number);
+    const currentAgents = await userService.getCustomAgents(req.user.phone_number);
+    
+    const agentLimits: Record<string, number> = {
+      'basic': 0,
+      'pro': 3,
+      'unlimited': 10,
+    };
+    
+    const limit = agentLimits[user?.pricing_tier || 'basic'] || 0;
+    
+    if (currentAgents.length >= limit) {
+      return res.status(403).json({ 
+        error: `Your ${user?.pricing_tier || 'basic'} plan allows ${limit} custom agents. Upgrade to create more.` 
+      });
+    }
+
+    const agentId = await userService.createCustomAgent(
+      req.user.phone_number,
+      name,
+      description || '',
+      systemPrompt
+    );
+
+    res.status(201).json({ 
+      success: true,
+      message: 'Custom agent created successfully',
+      agentId,
+    });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error creating custom agent:', error);
+    res.status(500).json({ error: 'Failed to create custom agent' });
+  }
+});
+
+/**
+ * PUT /api/account/agents/:id
+ * Update a custom agent
+ */
+router.put('/agents/:id', async (req: Request, res: Response) => {
+  try {
+    const agentId = parseInt(req.params.id);
+    const { name, description, systemPrompt } = req.body;
+
+    if (isNaN(agentId)) {
+      return res.status(400).json({ error: 'Invalid agent ID' });
+    }
+
+    if (!name || !systemPrompt) {
+      return res.status(400).json({ error: 'Name and system prompt are required' });
+    }
+
+    if (name.length > 100) {
+      return res.status(400).json({ error: 'Name must be 100 characters or less' });
+    }
+
+    if (systemPrompt.length > 2000) {
+      return res.status(400).json({ error: 'System prompt must be 2000 characters or less' });
+    }
+
+    const userService = new UserService();
+    
+    // Verify ownership
+    const agent = await userService.getCustomAgent(agentId);
+    if (!agent || agent.phone_number !== req.user.phone_number) {
+      return res.status(404).json({ error: 'Custom agent not found' });
+    }
+
+    await userService.updateCustomAgent(agentId, name, description || '', systemPrompt);
+
+    res.json({ 
+      success: true,
+      message: 'Custom agent updated successfully',
+    });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error updating custom agent:', error);
+    res.status(500).json({ error: 'Failed to update custom agent' });
+  }
+});
+
+/**
+ * DELETE /api/account/agents/:id
+ * Delete a custom agent
+ */
+router.delete('/agents/:id', async (req: Request, res: Response) => {
+  try {
+    const agentId = parseInt(req.params.id);
+
+    if (isNaN(agentId)) {
+      return res.status(400).json({ error: 'Invalid agent ID' });
+    }
+
+    const userService = new UserService();
+    
+    // Verify ownership
+    const agent = await userService.getCustomAgent(agentId);
+    if (!agent || agent.phone_number !== req.user.phone_number) {
+      return res.status(404).json({ error: 'Custom agent not found' });
+    }
+
+    await userService.deleteCustomAgent(agentId);
+
+    res.json({ 
+      success: true,
+      message: 'Custom agent deleted successfully',
+    });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error deleting custom agent:', error);
+    res.status(500).json({ error: 'Failed to delete custom agent' });
+  }
+});
+
+/**
+ * POST /api/account/agents/:id/activate
+ * Activate a custom agent
+ */
+router.post('/agents/:id/activate', async (req: Request, res: Response) => {
+  try {
+    const agentId = parseInt(req.params.id);
+
+    if (isNaN(agentId)) {
+      return res.status(400).json({ error: 'Invalid agent ID' });
+    }
+
+    const userService = new UserService();
+    
+    // Verify ownership
+    const agent = await userService.getCustomAgent(agentId);
+    if (!agent || agent.phone_number !== req.user.phone_number) {
+      return res.status(404).json({ error: 'Custom agent not found' });
+    }
+
+    await userService.activateCustomAgent(req.user.phone_number, agentId);
+
+    res.json({ 
+      success: true,
+      message: 'Custom agent activated successfully',
+    });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error activating custom agent:', error);
+    res.status(500).json({ error: 'Failed to activate custom agent' });
+  }
+});
+
+/**
+ * POST /api/account/agents/deactivate
+ * Deactivate custom agent (return to category-based mode)
+ */
+router.post('/agents/deactivate', async (req: Request, res: Response) => {
+  try {
+    const userService = new UserService();
+    await userService.deactivateCustomAgent(req.user.phone_number);
+
+    res.json({ 
+      success: true,
+      message: 'Custom agent deactivated successfully',
+    });
+  } catch (error: any) {
+    console.error('[ACCOUNT] Error deactivating custom agent:', error);
+    res.status(500).json({ error: 'Failed to deactivate custom agent' });
+  }
+});
+
 export default router;

@@ -266,17 +266,34 @@ async function handleActiveUserMessage(
     // Get conversation context
     const context = await sessionService.getContext(phoneNumber);
 
-    // Get user's selected categories
-    const userCategories = await userService.getSelectedCategories(phoneNumber);
+    // Check if user has an active custom agent
+    const customAgent = await userService.getActiveCustomAgent(phoneNumber);
+    
+    let aiResponse: string;
+    
+    if (customAgent) {
+      // Use custom agent's system prompt
+      console.log(`[SMS] Using custom agent: ${customAgent.name} (ID: ${customAgent.id})`);
+      aiResponse = await aiService.generateResponseWithCustomPrompt(
+        messageBody,
+        context.messages,
+        context.lastAiResponse,
+        customAgent.system_prompt,
+        language
+      );
+    } else {
+      // Get user's selected categories
+      const userCategories = await userService.getSelectedCategories(phoneNumber);
 
-    // Generate AI response with user's categories
-    const aiResponse = await aiService.generateResponse(
-      messageBody,
-      context.messages,
-      context.lastAiResponse,
-      userCategories,
-      language
-    );
+      // Generate AI response with user's categories
+      aiResponse = await aiService.generateResponse(
+        messageBody,
+        context.messages,
+        context.lastAiResponse,
+        userCategories,
+        language
+      );
+    }
 
     // Update session with new message and response
     await sessionService.updateSession(phoneNumber, messageBody, aiResponse);

@@ -375,6 +375,236 @@
       font-weight: 600;
       cursor: pointer;
     }
+
+    /* Custom Agents Styles */
+    .agent-description {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .add-agent-btn {
+      background: #1d1d1f;
+      color: #ffffff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .add-agent-btn:hover {
+      background: #333;
+    }
+
+    .agent-card {
+      background: #f5f5f7;
+      border: 2px solid #d2d2d7;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      transition: all 0.3s;
+    }
+
+    .agent-card.active {
+      border-color: #1d1d1f;
+      background: #ffffff;
+    }
+
+    .agent-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .agent-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 4px;
+    }
+
+    .agent-description-text {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    .agent-prompt {
+      background: #ffffff;
+      border: 1px solid #d2d2d7;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #333;
+      margin-bottom: 12px;
+      max-height: 100px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .agent-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .agent-btn {
+      padding: 6px 12px;
+      border: 1px solid #d2d2d7;
+      background: #ffffff;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+
+    .agent-btn:hover {
+      background: #f5f5f7;
+    }
+
+    .agent-btn.activate {
+      background: #1d1d1f;
+      color: #ffffff;
+      border-color: #1d1d1f;
+    }
+
+    .agent-btn.activate:hover {
+      background: #333;
+    }
+
+    .agent-btn.deactivate {
+      background: #666;
+      color: #ffffff;
+      border-color: #666;
+    }
+
+    .agent-btn.delete {
+      color: #d00;
+      border-color: #d00;
+    }
+
+    .agent-btn.delete:hover {
+      background: #d00;
+      color: #ffffff;
+    }
+
+    .agent-badge {
+      background: #1d1d1f;
+      color: #ffffff;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .agent-empty {
+      text-align: center;
+      color: #999;
+      padding: 40px 20px;
+      font-size: 14px;
+    }
+
+    /* Agent Modal */
+    .agent-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .agent-modal-content {
+      background: #ffffff;
+      max-width: 600px;
+      margin: 40px auto;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .agent-modal-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #1d1d1f;
+    }
+
+    .agent-form-group {
+      margin-bottom: 16px;
+    }
+
+    .agent-form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1d1d1f;
+    }
+
+    .agent-form-group input,
+    .agent-form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d2d2d7;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .agent-form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .agent-form-group small {
+      display: block;
+      color: #666;
+      margin-top: 4px;
+      font-size: 12px;
+    }
+
+    .agent-modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .agent-modal-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .agent-modal-btn.primary {
+      background: #1d1d1f;
+      color: #ffffff;
+    }
+
+    .agent-modal-btn.primary:hover {
+      background: #333;
+    }
+
+    .agent-modal-btn.secondary {
+      background: #f5f5f7;
+      color: #1d1d1f;
+    }
+
+    .agent-modal-btn.secondary:hover {
+      background: #e5e5e7;
+    }
   </style>
 </head>
 <body>
@@ -459,6 +689,22 @@
         </form>
       </div>
 
+      <!-- Custom Agents -->
+      <div class="card">
+        <div class="card-title">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>Dina AI-agenter</span>
+            <button class="add-agent-btn" onclick="openAgentModal()">+ Ny agent</button>
+          </div>
+        </div>
+        <div class="agent-description">
+          Skapa egna AI-agenter med anpassade instruktioner. När en agent är aktiv används dess instruktioner istället för kategorierna ovan.
+        </div>
+        <div id="agentsContainer">
+          <!-- Agents will be loaded here -->
+        </div>
+      </div>
+
       <!-- Transaction History -->
       <div class="card">
         <div class="card-title">Senaste transaktioner</div>
@@ -482,9 +728,41 @@
     </div>
   </div>
 
+  <!-- Agent Modal -->
+  <div id="agentModal" class="agent-modal">
+    <div class="agent-modal-content">
+      <div class="agent-modal-title" id="agentModalTitle">Skapa ny AI-agent</div>
+      <form id="agentForm">
+        <div class="agent-form-group">
+          <label for="agentName">Namn *</label>
+          <input type="text" id="agentName" required maxlength="100" placeholder="T.ex. Min Fiske-expert">
+          <small>Max 100 tecken</small>
+        </div>
+        
+        <div class="agent-form-group">
+          <label for="agentDescription">Beskrivning</label>
+          <input type="text" id="agentDescription" maxlength="200" placeholder="En kort beskrivning av agenten">
+          <small>Valfritt, max 200 tecken</small>
+        </div>
+        
+        <div class="agent-form-group">
+          <label for="agentPrompt">Instruktioner *</label>
+          <textarea id="agentPrompt" required maxlength="2000" placeholder="Skriv instruktioner för hur din AI-agent ska bete sig och svara. T.ex: 'Du är en expert på fiske i svenska vatten. Ge praktiska råd om fiskemetoder, utrustning och bästa platserna.'"></textarea>
+          <small><span id="promptCharCount">0</span>/2000 tecken</small>
+        </div>
+        
+        <div class="agent-modal-actions">
+          <button type="button" class="agent-modal-btn secondary" onclick="closeAgentModal()">Avbryt</button>
+          <button type="submit" class="agent-modal-btn primary">Spara agent</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
     const API_BASE = '';
     let authToken = localStorage.getItem('authToken');
+    let editingAgentId = null;
 
     // Check if logged in
     if (!authToken) {
@@ -713,8 +991,223 @@
       window.location.href = '/login.html';
     }
 
+    // Custom Agents Functions
+    async function loadAgents() {
+      try {
+        const response = await fetch('/api/account/agents', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          displayAgents(data.agents);
+        }
+      } catch (error) {
+        console.error('Error loading agents:', error);
+      }
+    }
+
+    function displayAgents(agents) {
+      const container = document.getElementById('agentsContainer');
+      
+      if (agents.length === 0) {
+        container.innerHTML = '<div class="agent-empty">Inga AI-agenter än. Skapa din första agent för att komma igång!</div>';
+        return;
+      }
+
+      container.innerHTML = agents.map(agent => `
+        <div class="agent-card ${agent.active ? 'active' : ''}">
+          <div class="agent-card-header">
+            <div>
+              <div class="agent-name">${escapeHtml(agent.name)}</div>
+              ${agent.description ? `<div class="agent-description-text">${escapeHtml(agent.description)}</div>` : ''}
+            </div>
+            ${agent.active ? '<span class="agent-badge">Aktiv</span>' : ''}
+          </div>
+          <div class="agent-prompt">${escapeHtml(agent.system_prompt)}</div>
+          <div class="agent-actions">
+            ${!agent.active ? 
+              `<button class="agent-btn activate" onclick="activateAgent(${agent.id})">Aktivera</button>` :
+              `<button class="agent-btn deactivate" onclick="deactivateAgent()">Inaktivera</button>`
+            }
+            <button class="agent-btn" onclick="editAgent(${agent.id})">Redigera</button>
+            <button class="agent-btn delete" onclick="deleteAgent(${agent.id})">Ta bort</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openAgentModal() {
+      editingAgentId = null;
+      document.getElementById('agentModalTitle').textContent = 'Skapa ny AI-agent';
+      document.getElementById('agentForm').reset();
+      document.getElementById('promptCharCount').textContent = '0';
+      document.getElementById('agentModal').style.display = 'block';
+    }
+
+    function closeAgentModal() {
+      document.getElementById('agentModal').style.display = 'none';
+      editingAgentId = null;
+    }
+
+    async function editAgent(agentId) {
+      try {
+        const response = await fetch('/api/account/agents', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const agent = data.agents.find(a => a.id === agentId);
+          
+          if (agent) {
+            editingAgentId = agentId;
+            document.getElementById('agentModalTitle').textContent = 'Redigera AI-agent';
+            document.getElementById('agentName').value = agent.name;
+            document.getElementById('agentDescription').value = agent.description || '';
+            document.getElementById('agentPrompt').value = agent.system_prompt;
+            document.getElementById('promptCharCount').textContent = agent.system_prompt.length;
+            document.getElementById('agentModal').style.display = 'block';
+          }
+        }
+      } catch (error) {
+        console.error('Error loading agent:', error);
+        alert('Kunde inte ladda agenten. Försök igen.');
+      }
+    }
+
+    async function activateAgent(agentId) {
+      try {
+        const response = await fetch(`/api/account/agents/${agentId}/activate`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          loadAgents();
+          alert('AI-agent aktiverad! Den används nu istället för kategorier.');
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Kunde inte aktivera agenten.');
+        }
+      } catch (error) {
+        console.error('Error activating agent:', error);
+        alert('Ett fel uppstod. Försök igen.');
+      }
+    }
+
+    async function deactivateAgent() {
+      try {
+        const response = await fetch('/api/account/agents/deactivate', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          loadAgents();
+          alert('AI-agent inaktiverad. Använder nu kategorier igen.');
+        } else {
+          alert('Kunde inte inaktivera agenten.');
+        }
+      } catch (error) {
+        console.error('Error deactivating agent:', error);
+        alert('Ett fel uppstod. Försök igen.');
+      }
+    }
+
+    async function deleteAgent(agentId) {
+      if (!confirm('Är du säker på att du vill ta bort denna AI-agent?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/account/agents/${agentId}`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          loadAgents();
+          alert('AI-agent borttagen.');
+        } else {
+          alert('Kunde inte ta bort agenten.');
+        }
+      } catch (error) {
+        console.error('Error deleting agent:', error);
+        alert('Ett fel uppstod. Försök igen.');
+      }
+    }
+
+    // Agent form submission
+    document.getElementById('agentForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('agentName').value;
+      const description = document.getElementById('agentDescription').value;
+      const systemPrompt = document.getElementById('agentPrompt').value;
+
+      const url = editingAgentId 
+        ? `/api/account/agents/${editingAgentId}`
+        : '/api/account/agents';
+      
+      const method = editingAgentId ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ name, description, systemPrompt })
+        });
+
+        if (response.ok) {
+          closeAgentModal();
+          loadAgents();
+          alert(editingAgentId ? 'AI-agent uppdaterad!' : 'AI-agent skapad!');
+        } else {
+          const data = await response.json();
+          alert(data.error || 'Kunde inte spara agenten.');
+        }
+      } catch (error) {
+        console.error('Error saving agent:', error);
+        alert('Ett fel uppstod. Försök igen.');
+      }
+    });
+
+    // Character counter for prompt
+    document.getElementById('agentPrompt').addEventListener('input', (e) => {
+      document.getElementById('promptCharCount').textContent = e.target.value.length;
+    });
+
+    // Close modal on outside click
+    document.getElementById('agentModal').addEventListener('click', (e) => {
+      if (e.target.id === 'agentModal') {
+        closeAgentModal();
+      }
+    });
+
+    // Escape HTML helper
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     // Load data on page load
     loadUserData();
+    loadAgents();
   </script>
 </body>
 </html>

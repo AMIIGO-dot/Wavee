@@ -307,4 +307,128 @@ export class UserService {
       [twilioNumber, phoneNumber]
     );
   }
+
+  /**
+   * Get all custom agents for a user
+   */
+  async getCustomAgents(phoneNumber: string): Promise<any[]> {
+    return await this.db.all(
+      'SELECT id, name, description, system_prompt, active, created_at, updated_at FROM custom_agents WHERE phone_number = ? ORDER BY created_at DESC',
+      [phoneNumber]
+    );
+  }
+
+  /**
+   * Get a single custom agent by ID
+   */
+  async getCustomAgent(agentId: number): Promise<any | undefined> {
+    return await this.db.get(
+      'SELECT * FROM custom_agents WHERE id = ?',
+      [agentId]
+    );
+  }
+
+  /**
+   * Create a new custom agent
+   */
+  async createCustomAgent(
+    phoneNumber: string,
+    name: string,
+    description: string,
+    systemPrompt: string
+  ): Promise<number> {
+    const result = await this.db.run(
+      'INSERT INTO custom_agents (phone_number, name, description, system_prompt) VALUES (?, ?, ?, ?)',
+      [phoneNumber, name, description, systemPrompt]
+    );
+    console.log(`[USER] Created custom agent for ${phoneNumber}: ${name}`);
+    return result.lastID!;
+  }
+
+  /**
+   * Update a custom agent
+   */
+  async updateCustomAgent(
+    agentId: number,
+    name: string,
+    description: string,
+    systemPrompt: string
+  ): Promise<void> {
+    await this.db.run(
+      'UPDATE custom_agents SET name = ?, description = ?, system_prompt = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
+      [name, description, systemPrompt, agentId]
+    );
+    console.log(`[USER] Updated custom agent: ${agentId}`);
+  }
+
+  /**
+   * Delete a custom agent
+   */
+  async deleteCustomAgent(agentId: number): Promise<void> {
+    await this.db.run(
+      'DELETE FROM custom_agents WHERE id = ?',
+      [agentId]
+    );
+    console.log(`[USER] Deleted custom agent: ${agentId}`);
+  }
+
+  /**
+   * Activate a custom agent (deactivate all others)
+   */
+  async activateCustomAgent(phoneNumber: string, agentId: number): Promise<void> {
+    // Deactivate all agents for this user
+    await this.db.run(
+      'UPDATE custom_agents SET active = false WHERE phone_number = ?',
+      [phoneNumber]
+    );
+    
+    // Activate the selected agent
+    await this.db.run(
+      'UPDATE custom_agents SET active = true WHERE id = ?',
+      [agentId]
+    );
+    
+    // Update user's active_agent_id
+    await this.db.run(
+      'UPDATE users SET active_agent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
+      [agentId, phoneNumber]
+    );
+    
+    console.log(`[USER] Activated custom agent ${agentId} for ${phoneNumber}`);
+  }
+
+  /**
+   * Deactivate custom agent (return to category-based mode)
+   */
+  async deactivateCustomAgent(phoneNumber: string): Promise<void> {
+    // Deactivate all agents for this user
+    await this.db.run(
+      'UPDATE custom_agents SET active = false WHERE phone_number = ?',
+      [phoneNumber]
+    );
+    
+    // Clear user's active_agent_id
+    await this.db.run(
+      'UPDATE users SET active_agent_id = NULL, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
+      [phoneNumber]
+    );
+    
+    console.log(`[USER] Deactivated custom agents for ${phoneNumber}`);
+  }
+
+  /**
+   * Get active custom agent for a user
+   */
+  async getActiveCustomAgent(phoneNumber: string): Promise<any | undefined> {
+    const user = await this.getUser(phoneNumber);
+    if (!user?.active_agent_id) {
+      return undefined;
+    }
+    
+    return await this.db.get(
+      'SELECT * FROM custom_agents WHERE id = ? AND active = true',
+      [user.active_agent_id]
+    );
+  }
 }
+

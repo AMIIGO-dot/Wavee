@@ -101,6 +101,58 @@ export class AIService {
       // Get system prompt based on user's selected categories and language
       const systemPrompt = getSystemPromptForCategories(userCategories, language);
 
+      return await this.generateResponseWithSystemPrompt(
+        userMessage,
+        conversationHistory,
+        lastAiResponse,
+        systemPrompt
+      );
+    } catch (error) {
+      console.error('[AI] Error generating response:', error);
+      throw new Error('Failed to generate AI response');
+    }
+  }
+
+  /**
+   * Generate a response with a custom system prompt
+   */
+  async generateResponseWithCustomPrompt(
+    userMessage: string,
+    conversationHistory: string[] = [],
+    lastAiResponse: string | null = null,
+    customSystemPrompt: string,
+    language: 'sv' | 'en' = 'sv'
+  ): Promise<string> {
+    try {
+      // Add language instruction to custom prompt
+      const languageInstruction = language === 'sv' 
+        ? '\n\nSVARA ALLTID PÅ SVENSKA.'
+        : '\n\nALWAYS RESPOND IN ENGLISH.';
+      
+      const systemPrompt = customSystemPrompt + languageInstruction;
+
+      return await this.generateResponseWithSystemPrompt(
+        userMessage,
+        conversationHistory,
+        lastAiResponse,
+        systemPrompt
+      );
+    } catch (error) {
+      console.error('[AI] Error generating response with custom prompt:', error);
+      throw new Error('Failed to generate AI response');
+    }
+  }
+
+  /**
+   * Internal method to generate response with a given system prompt
+   */
+  private async generateResponseWithSystemPrompt(
+    userMessage: string,
+    conversationHistory: string[] = [],
+    lastAiResponse: string | null = null,
+    systemPrompt: string
+  ): Promise<string> {
+    try {
       // Build conversation context
       const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
         {
