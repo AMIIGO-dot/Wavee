@@ -378,19 +378,19 @@ export class UserService {
   async activateCustomAgent(phoneNumber: string, agentId: number): Promise<void> {
     // Deactivate all agents for this user
     await this.db.run(
-      'UPDATE custom_agents SET active = false WHERE phone_number = ?',
-      [phoneNumber]
+      'UPDATE custom_agents SET active = $1 WHERE phone_number = $2',
+      [false, phoneNumber]
     );
     
     // Activate the selected agent
     await this.db.run(
-      'UPDATE custom_agents SET active = true WHERE id = ?',
-      [agentId]
+      'UPDATE custom_agents SET active = $1 WHERE id = $2',
+      [true, agentId]
     );
     
     // Update user's active_agent_id
     await this.db.run(
-      'UPDATE users SET active_agent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
+      'UPDATE users SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE phone_number = $2',
       [agentId, phoneNumber]
     );
     
@@ -403,14 +403,14 @@ export class UserService {
   async deactivateCustomAgent(phoneNumber: string): Promise<void> {
     // Deactivate all agents for this user
     await this.db.run(
-      'UPDATE custom_agents SET active = false WHERE phone_number = ?',
-      [phoneNumber]
+      'UPDATE custom_agents SET active = $1 WHERE phone_number = $2',
+      [false, phoneNumber]
     );
     
     // Clear user's active_agent_id
     await this.db.run(
-      'UPDATE users SET active_agent_id = NULL, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
-      [phoneNumber]
+      'UPDATE users SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE phone_number = $2',
+      [null, phoneNumber]
     );
     
     console.log(`[USER] Deactivated custom agents for ${phoneNumber}`);
@@ -426,8 +426,8 @@ export class UserService {
     }
     
     return await this.db.get(
-      'SELECT * FROM custom_agents WHERE id = ? AND active = true',
-      [user.active_agent_id]
+      'SELECT * FROM custom_agents WHERE id = $1 AND active = $2',
+      [user.active_agent_id, true]
     );
   }
 }
