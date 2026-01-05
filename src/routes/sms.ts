@@ -115,35 +115,30 @@ router.post('/incoming', async (req: Request, res: Response) => {
 
     // Check if user is pending activation
     const isPending = await userService.isUserPending(phoneNumber);
+    const isActive = await userService.isUserActive(phoneNumber);
 
-    if (isPending) {
-      // Handle opt-in confirmation
+    // If user is not active (pending or inactive), handle opt-in
+    if (!isActive) {
+      // Handle opt-in confirmation for both pending and inactive users
       if (isYesConfirmation(messageBody)) {
         await userService.activateUser(phoneNumber);
         await userService.logConsent(phoneNumber); // Log consent timestamp
         
-        // Give free trial credits to new users
-        const { FREE_TRIAL_CREDITS } = await import('../config/pricing');
-        await userService.addCredits(phoneNumber, FREE_TRIAL_CREDITS);
-        await userService.logTransaction(phoneNumber, 'purchase', FREE_TRIAL_CREDITS, 'Free trial credits');
+        // Give free trial credits ONLY to pending users (not to reactivated users)
+        if (isPending) {
+          const { FREE_TRIAL_CREDITS } = await import('../config/pricing');
+          await userService.addCredits(phoneNumber, FREE_TRIAL_CREDITS);
+          await userService.logTransaction(phoneNumber, 'purchase', FREE_TRIAL_CREDITS, 'Free trial credits');
+        }
         
         await twilioService.sendActivationMessage(phoneNumber, userLanguage);
         
-        console.log(`[SMS] User ${phoneNumber} activated with consent logged and ${FREE_TRIAL_CREDITS} free credits`);
+        console.log(`[SMS] User ${phoneNumber} activated (was ${isPending ? 'pending' : 'inactive'})`);
       } else {
         // Remind them to reply YES
         await twilioService.sendOptInMessage(phoneNumber, userLanguage);
       }
       
-      return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
-    }
-
-    // Check if user is active
-    const isActive = await userService.isUserActive(phoneNumber);
-
-    if (!isActive) {
-      // User is inactive - send opt-in again
-      await twilioService.sendOptInMessage(phoneNumber, userLanguage);
       return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
     }
 
