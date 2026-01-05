@@ -23,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.17",
+    "@types/pg": "^8.16.0",
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "dotenv": "^16.3.1",
@@ -31,6 +32,7 @@
     "openai": "^4.24.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pg": "^8.16.3",
     "sqlite3": "^5.1.7",
     "stripe": "^20.1.0",
     "twilio": "^4.20.0"
