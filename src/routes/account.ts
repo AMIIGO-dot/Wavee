@@ -355,7 +355,10 @@ router.post('/agents/deactivate', async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('[ACCOUNT] Error deactivating custom agent:', error);
-    res.status(500).json({ error: 'Failed to deactivate custom agent' });
+    res.status(500).json({ 
+      error: 'Failed to deactivate custom agent',
+      details: error.message 
+    });
   }
 });
 

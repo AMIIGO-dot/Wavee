@@ -1115,7 +1115,9 @@
           loadAgents();
           alert('AI-agent inaktiverad. Använder nu kategorier igen.');
         } else {
-          alert('Kunde inte inaktivera agenten.');
+          const data = await response.json();
+          alert(data.error || 'Kunde inte inaktivera agenten.');
+          console.error('Deactivate error:', data);
         }
       } catch (error) {
         console.error('Error deactivating agent:', error);
