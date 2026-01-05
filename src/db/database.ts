@@ -54,7 +54,10 @@ class Database {
     });
 
     console.log('[DATABASE] PostgreSQL connection pool created');
-    this.initialize();
+    // Initialize tables asynchronously (don't await in constructor)
+    this.initialize().catch(err => {
+      console.error('[DATABASE] Failed to initialize:', err);
+    });
   }
 
   private async initialize(): Promise<void> {
@@ -108,15 +111,15 @@ class Database {
         )
       `);
 
-      // Indexes
+      // Indexes (PostgreSQL doesn't support DESC in CREATE INDEX directly)
       await this.run(`
         CREATE INDEX IF NOT EXISTS idx_transactions_phone 
-        ON transactions(phone_number, created_at DESC)
+        ON transactions(phone_number, created_at)
       `);
 
       await this.run(`
         CREATE INDEX IF NOT EXISTS idx_sessions_phone 
-        ON sessions(phone_number, updated_at DESC)
+        ON sessions(phone_number, updated_at)
       `);
 
       console.log('[DATABASE] Tables initialized successfully');
