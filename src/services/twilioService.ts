@@ -12,18 +12,29 @@ export class TwilioService {
     this.fromNumberSE = process.env.TWILIO_PHONE_NUMBER_SE || process.env.TWILIO_PHONE_NUMBER || '';
     this.fromNumberUS = process.env.TWILIO_PHONE_NUMBER_US || '';
 
-    console.log('[TWILIO DEBUG] Environment variables:', {
+    console.log('[TWILIO] Initializing with configuration:', {
       accountSid: accountSid ? `${accountSid.substring(0, 5)}...` : 'MISSING',
       authToken: authToken ? 'SET' : 'MISSING',
       phoneNumberSE: this.fromNumberSE || 'MISSING',
-      phoneNumberUS: this.fromNumberUS || 'MISSING'
+      phoneNumberUS: this.fromNumberUS || 'MISSING',
+      hasSeNumber: !!this.fromNumberSE,
+      hasUsNumber: !!this.fromNumberUS,
     });
 
-    if (!accountSid || !authToken || !this.fromNumberSE) {
-      throw new Error('Missing required Twilio environment variables');
+    if (!accountSid || !authToken) {
+      const error = 'Missing required Twilio credentials (TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN)';
+      console.error('[TWILIO] ERROR:', error);
+      throw new Error(error);
+    }
+
+    if (!this.fromNumberSE && !this.fromNumberUS) {
+      const error = 'At least one Twilio phone number must be configured (TWILIO_PHONE_NUMBER_SE or TWILIO_PHONE_NUMBER_US)';
+      console.error('[TWILIO] ERROR:', error);
+      throw new Error(error);
     }
 
     this.client = twilio(accountSid, authToken);
+    console.log('[TWILIO] Client initialized successfully');
   }
 
   /**

@@ -2,14 +2,18 @@ import dotenv from 'dotenv';
 import path from 'path';
 
 // Load .env from project root (one level up from dist/)
+// In production (Railway), environment variables are already set, so .env file is optional
 const envPath = path.resolve(__dirname, '../.env');
-console.log('[DOTENV] Loading from:', envPath);
 const result = dotenv.config({ path: envPath });
 if (result.error) {
-  console.error('[DOTENV] Error loading .env:', result.error);
+  // Only log warning if in development, not an error in production
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[DOTENV] Warning: Could not load .env file:', envPath);
+  } else {
+    console.log('[DOTENV] No .env file found (using environment variables from platform)');
+  }
 } else {
-  console.log('[DOTENV] Loaded successfully');
-  console.log('[DOTENV] STRIPE_SECRET_KEY present:', !!process.env.STRIPE_SECRET_KEY);
+  console.log('[DOTENV] Loaded .env successfully from:', envPath);
 }
 
 import express, { Express, Request, Response, NextFunction } from 'express';

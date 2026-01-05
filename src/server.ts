@@ -3,7 +3,8 @@ import path from 'path';
 import app from './app';
 import { getDatabase } from './db/database';
 
-// Load environment variables from project root
+// Load environment variables from project root (optional in production)
+// In Railway, environment variables are already set
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // Validate required environment variables
