@@ -92,7 +92,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
       });
       await twilioService.sendOptInMessage(phoneNumber, detectedLanguage);
       
-      return res.status(200).send('OK');
+      return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
     }
 
     // Always use the language based on which number they're messaging
@@ -135,7 +135,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
         await twilioService.sendOptInMessage(phoneNumber, userLanguage);
       }
       
-      return res.status(200).send('OK');
+      return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
     }
 
     // Check if user is active
@@ -144,7 +144,7 @@ router.post('/incoming', async (req: Request, res: Response) => {
     if (!isActive) {
       // User is inactive - send opt-in again
       await twilioService.sendOptInMessage(phoneNumber, userLanguage);
-      return res.status(200).send('OK');
+      return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
     }
 
     // Check rate limits
@@ -152,13 +152,13 @@ router.post('/incoming', async (req: Request, res: Response) => {
     if (!rateLimit.allowed) {
       await twilioService.sendSMS(phoneNumber, rateLimit.reason!, userLanguage);
       console.log(`[RATE LIMIT] Blocked message from ${phoneNumber}: ${rateLimit.reason}`);
-      return res.status(200).send('OK');
+      return res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
     }
 
     // Active user - process the message
     await handleActiveUserMessage(phoneNumber, messageBody, mediaUrl, mediaType, userLanguage);
 
-    res.status(200).send('OK');
+    res.status(200).type('text/xml').send('<?xml version="1.0" encoding="UTF-8"?><Response></Response>');
   } catch (error) {
     console.error('[SMS] Error processing incoming message:', error);
     res.status(500).send('Internal server error');
