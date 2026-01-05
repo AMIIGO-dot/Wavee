@@ -10,7 +10,6 @@ dotenv.config({ path: path.resolve(__dirname, '../.env') });
 const requiredEnvVars = [
   'TWILIO_ACCOUNT_SID',
   'TWILIO_AUTH_TOKEN',
-  'TWILIO_PHONE_NUMBER',
   'OPENAI_API_KEY',
 ];
 
@@ -19,6 +18,12 @@ for (const envVar of requiredEnvVars) {
     console.error(`ERROR: Missing required environment variable: ${envVar}`);
     process.exit(1);
   }
+}
+
+// Validate that at least one Twilio phone number is configured
+if (!process.env.TWILIO_PHONE_NUMBER_SE && !process.env.TWILIO_PHONE_NUMBER_US && !process.env.TWILIO_PHONE_NUMBER) {
+  console.error('ERROR: At least one Twilio phone number must be configured (TWILIO_PHONE_NUMBER_SE, TWILIO_PHONE_NUMBER_US, or TWILIO_PHONE_NUMBER)');
+  process.exit(1);
 }
 
 // Initialize database
