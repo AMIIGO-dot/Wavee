@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logga in - WAVEE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-container {
+      background: #1d1d1f;
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      max-width: 420px;
+      width: 100%;
+      padding: 40px;
+      border: none;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .logo h1 {
+      font-size: 28px;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+
+    .logo img {
+      height: 40px;
+      width: auto;
+      margin-bottom: 5px;
+    }
+
+    .logo p {
+      color: #d2d2d7;
+      font-size: 14px;
+    }
+
+    .tabs {
+      display: flex;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #424245;
+    }
+
+    .tab {
+      flex: 1;
+      padding: 12px;
+      text-align: center;
+      cursor: pointer;
+      color: #86868b;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.3s;
+    }
+
+    .tab.active {
+      color: #ffffff;
+      border-bottom-color: #ffffff;
+    }
+
+    .form-content {
+      display: none;
+    }
+
+    .form-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #f5f5f7;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #424245;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+      background: #2d2d2f;
+      color: #ffffff;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #ffffff;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #ffffff;
+      color: #1d1d1f;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      background: #f5f5f7;
+      box-shadow: none;
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      text-align: center;
+      margin: 25px 0;
+      color: #888;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: #424245;
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .google-btn {
+      width: 100%;
+      padding: 12px;
+      background: #2d2d2f;
+      border: 1px solid #424245;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+      color: #ffffff;
+    }
+
+    .google-btn:hover {
+      border-color: #ffffff;
+      background: #3d3d3f;
+    }
+
+    .error-message {
+      background: #ffe5e5;
+      color: #d32f2f;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+      border: 1px solid #ffcdd2;
+    }
+
+    .success-message {
+      background: #e5ffe5;
+      color: #2f7d32;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      font-size: 14px;
+      border: 1px solid #c8e6c9;
+    }
+
+    .footer-link {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 14px;
+      color: #888;
+    }
+
+    .footer-link a {
+      color: #FFA726;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="logo">
+      <img src="/assets/wavee%20white(1).png" alt="WAVEE">
+      <p>Din personliga SMS-assistent</p>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="login">Logga in</div>
+      <div class="tab" data-tab="register">Registrera</div>
+    </div>
+
+    <div class="error-message" id="errorMessage"></div>
+    <div class="success-message" id="successMessage"></div>
+
+    <!-- Login Form -->
+    <div class="form-content active" id="loginForm">
+      <form id="loginFormElement">
+        <div class="form-group">
+          <label for="loginPhone">Telefon eller E-post</label>
+          <input type="text" id="loginPhone" placeholder="+46701234567 eller din@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Lösenord</label>
+          <input type="password" id="loginPassword" placeholder="Ange lösenord" required>
+        </div>
+        <button type="submit" class="submit-btn">Logga in</button>
+      </form>
+
+      <div class="divider">eller</div>
+
+      <button class="google-btn" onclick="handleGoogleLogin()">
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        Fortsätt med Google
+      </button>
+    </div>
+
+    <!-- Register Form -->
+    <div class="form-content" id="registerForm">
+      <form id="registerFormElement">
+        <div class="form-group">
+          <label for="registerPhone">Telefonnummer</label>
+          <input type="tel" id="registerPhone" placeholder="+46701234567" required>
+        </div>
+        <div class="form-group">
+          <label for="registerEmail">E-post (valfritt)</label>
+          <input type="email" id="registerEmail" placeholder="din@email.com">
+        </div>
+        <div class="form-group">
+          <label for="registerPassword">Lösenord (minst 8 tecken)</label>
+          <input type="password" id="registerPassword" placeholder="Välj ett starkt lösenord" required minlength="8">
+        </div>
+        <button type="submit" class="submit-btn">Skapa konto</button>
+      </form>
+
+      <div class="divider">eller</div>
+
+      <button class="google-btn" onclick="handleGoogleLogin()">
+        <svg width="20" height="20" viewBox="0 0 48 48">
+          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        </svg>
+        Registrera med Google
+      </button>
+    </div>
+
+    <div class="footer-link">
+      Ny kund? <a href="/">Köp credits här</a>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        const tabName = tab.dataset.tab;
+        
+        // Update active tab
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        // Update active form
+        document.querySelectorAll('.form-content').forEach(f => f.classList.remove('active'));
+        if (tabName === 'login') {
+          document.getElementById('loginForm').classList.add('active');
+        } else {
+          document.getElementById('registerForm').classList.add('active');
+        }
+
+        // Clear messages
+        hideError();
+        hideSuccess();
+      });
+    });
+
+    // Login form submit
+    document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const phoneNumber = document.getElementById('loginPhone').value;
+      const password = document.getElementById('loginPassword').value;
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phoneNumber, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Save token
+          localStorage.setItem('authToken', data.token);
+          showSuccess('Inloggning lyckades! Omdirigerar...');
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1000);
+        } else {
+          showError(data.error || 'Inloggning misslyckades');
+        }
+      } catch (error) {
+        showError('Ett fel uppstod. Försök igen.');
+      }
+    });
+
+    // Register form submit
+    document.getElementById('registerFormElement').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const phoneNumber = document.getElementById('registerPhone').value;
+      const password = document.getElementById('registerPassword').value;
+      const email = document.getElementById('registerEmail').value;
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phoneNumber, password, email: email || undefined }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Save token
+          localStorage.setItem('authToken', data.token);
+          showSuccess('Konto skapat! Omdirigerar...');
+          
+          // Redirect to dashboard
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 1000);
+        } else {
+          showError(data.error || 'Registrering misslyckades');
+        }
+      } catch (error) {
+        showError('Ett fel uppstod. Försök igen.');
+      }
+    });
+
+    // Google login (placeholder - requires Google OAuth setup)
+    function handleGoogleLogin() {
+      showError('Google-inloggning kommer snart! Använd telefonnummer & lösenord tills vidare.');
+    }
+
+    function showError(message) {
+      const errorEl = document.getElementById('errorMessage');
+      errorEl.textContent = message;
+      errorEl.style.display = 'block';
+      document.getElementById('successMessage').style.display = 'none';
+    }
+
+    function showSuccess(message) {
+      const successEl = document.getElementById('successMessage');
+      successEl.textContent = message;
+      successEl.style.display = 'block';
+      document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    function hideError() {
+      document.getElementById('errorMessage').style.display = 'none';
+    }
+
+    function hideSuccess() {
+      document.getElementById('successMessage').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

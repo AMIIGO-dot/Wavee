@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - WAVEE</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #ffffff;
+      min-height: 100vh;
+    }
+
+    .header {
+      background: #ffffff;
+      color: #1d1d1f;
+      padding: 20px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+      border-bottom: 1px solid #d2d2d7;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #1d1d1f;
+    }
+
+    .header img {
+      height: 30px;
+      width: auto;
+    }
+
+    .logout-btn {
+      background: transparent;
+      border: 2px solid #1d1d1f;
+      color: #1d1d1f;
+      padding: 8px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s;
+    }
+
+    .logout-btn:hover {
+      background: #1d1d1f;
+      color: #ffffff;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      border: 1px solid #d2d2d7;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #1d1d1f;
+    }
+
+    .balance-display {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 30px;
+      background: #1d1d1f;
+      border-radius: 12px;
+      color: #ffffff;
+    }
+
+    .balance-icon {
+      font-size: 48px;
+    }
+
+    .balance-info h2 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: #ffffff;
+    }
+
+    .balance-info p {
+      opacity: 0.9;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .tier-badge {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      display: inline-block;
+      margin-top: 8px;
+      color: #ffffff;
+    }
+
+    .upgrade-btn {
+      background: #ffffff;
+      color: #1d1d1f;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: auto;
+      transition: all 0.2s;
+    }
+
+    .upgrade-btn:hover {
+      transform: translateY(-2px);
+      background: #f5f5f7;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      padding: 15px;
+      background: #f5f5f7;
+      border-radius: 8px;
+      border: none;
+    }
+
+    .info-item label {
+      display: block;
+      font-size: 12px;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 5px;
+    }
+
+    .info-item .value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1d1d1f;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      color: #1d1d1f;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .form-group select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid #d2d2d7;
+      border-radius: 10px;
+      font-size: 16px;
+      background: #ffffff;
+      cursor: pointer;
+      color: #1d1d1f;
+    }
+
+    .form-group select:focus {
+      outline: none;
+      border-color: #1d1d1f;
+    }
+
+    .tone-description {
+      font-size: 13px;
+      color: #86868b;
+      margin-top: 5px;
+      padding: 10px;
+      background: #f5f5f7;
+      border-radius: 6px;
+      border: none;
+    }
+
+    .save-btn {
+      background: #1d1d1f;
+      color: #ffffff;
+      border: none;
+      padding: 12px 30px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .save-btn:hover {
+      transform: translateY(-2px);
+      background: #000000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .success-message {
+      background: #e5ffe5;
+      color: #2f7d32;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+      border: 1px solid #c8e6c9;
+    }
+
+    .transactions-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .transactions-table th {
+      text-align: left;
+      padding: 12px;
+      background: #f5f5f7;
+      font-size: 12px;
+      color: #86868b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid #d2d2d7;
+    }
+
+    .transactions-table td {
+      padding: 12px;
+      border-bottom: 1px solid #f5f5f7;
+      color: #1d1d1f;
+    }
+
+    .transaction-type {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .type-purchase {
+      background: #e5ffe5;
+      color: #2f7d32;
+    }
+
+    .type-usage {
+      background: #fff4e5;
+      color: #ef6c00;
+    }
+
+    .type-refund {
+      background: #ffe5e5;
+      color: #d32f2f;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #86868b;
+    }
+
+    /* Category Selection Styles */
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .category-card {
+      background: #ffffff;
+      border: 2px solid #d2d2d7;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      position: relative;
+    }
+
+    .category-card:hover {
+      border-color: #86868b;
+      transform: translateY(-2px);
+    }
+
+    .category-card.selected {
+      border-color: #1d1d1f;
+      background: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .category-card.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .category-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .category-name {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1d1d1f;
+      margin-bottom: 8px;
+    }
+
+    .category-description {
+      font-size: 13px;
+      color: #86868b;
+      line-height: 1.4;
+    }
+
+    .category-check {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #1d1d1f;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #1d1d1f;
+    }
+
+    .category-card.selected .category-check {
+      display: flex;
+    }
+
+    .category-limit-warning {
+      background: #f5f5f7;
+      border: 1px solid #d2d2d7;
+      color: #1d1d1f;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .upgrade-link {
+      color: #1d1d1f;
+      text-decoration: underline;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="header-content">
+      <img src="/assets/wavee.png" alt="WAVEE">
+      <button class="logout-btn" onclick="logout()">Logga ut</button>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="loading" class="loading">Laddar...</div>
+    <div id="content" style="display: none;">
+      
+      <!-- Balance Card -->
+      <div class="card">
+        <div class="balance-display">
+          <div class="balance-icon"></div>
+          <div class="balance-info">
+            <h2 id="creditsDisplay">--</h2>
+            <p>Credits kvar</p>
+            <span class="tier-badge" id="tierBadge">--</span>
+          </div>
+          <button class="upgrade-btn" onclick="window.location.href='/'">Köp mer</button>
+        </div>
+      </div>
+
+      <!-- Account Info -->
+      <div class="card">
+        <div class="card-title">Kontoinformation</div>
+        <div class="info-grid">
+          <div class="info-item">
+            <label>Telefonnummer</label>
+            <div class="value" id="phoneNumber">--</div>
+          </div>
+          <div class="info-item">
+            <label>E-post</label>
+            <div class="value" id="email">--</div>
+          </div>
+          <div class="info-item">
+            <label>Status</label>
+            <div class="value" id="status">--</div>
+          </div>
+          <div class="info-item">
+            <label>Medlem sedan</label>
+            <div class="value" id="memberSince">--</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Settings -->
+      <div class="card">
+        <div class="card-title">AI-inställningar</div>
+        <div class="success-message" id="settingsSuccess">Inställningar sparade!</div>
+        
+        <!-- Category Selection -->
+        <div class="form-group">
+          <label>AI-kategorier</label>
+          <div id="categoryLimitWarning" class="category-limit-warning" style="display: none;">
+            Du kan välja max <span id="maxCategoriesText">1</span> kategori med din nuvarande plan. 
+            <span class="upgrade-link" onclick="window.location.href='/#priser'">Uppgradera till Pro eller Premium</span> för fler kategorier.
+          </div>
+          <div class="categories-grid" id="categoriesGrid">
+            <!-- Categories will be loaded here -->
+          </div>
+        </div>
+
+        <form id="settingsForm">
+          <div class="form-group">
+            <label for="aiTone">Tonalitet</label>
+            <select id="aiTone" name="aiTone">
+              <option value="casual">Avslappnad - Pratar som en kompis</option>
+              <option value="professional">Professionell - Tydlig och saklig</option>
+              <option value="friendly">Vänlig - Hjälpsam och uppmuntrande (standard)</option>
+            </select>
+            <div class="tone-description" id="toneDescription">
+              Välj hur din AI-assistent ska kommunicera med dig. Detta påverkar tonläget i svaren du får via SMS.
+            </div>
+          </div>
+
+          <button type="submit" class="save-btn">Spara ändringar</button>
+        </form>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="card">
+        <div class="card-title">Senaste transaktioner</div>
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Typ</th>
+              <th>Credits</th>
+              <th>Beskrivning</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsBody">
+            <tr>
+              <td colspan="4" style="text-align: center; color: #999;">Laddar...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = '';
+    let authToken = localStorage.getItem('authToken');
+
+    // Check if logged in
+    if (!authToken) {
+      window.location.href = '/login.html';
+    }
+
+    let selectedCategories = [];
+    let maxCategories = 1;
+    let availableCategories = [];
+
+    // Load user data on page load
+    async function loadUserData() {
+      try {
+        const response = await fetch('/api/account', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load user data');
+        }
+
+        const data = await response.json();
+        
+        // Update balance
+        document.getElementById('creditsDisplay').textContent = data.creditsRemaining;
+        document.getElementById('tierBadge').textContent = data.pricingTier || 'Ingen';
+
+        // Update account info
+        document.getElementById('phoneNumber').textContent = data.phoneNumber;
+        document.getElementById('email').textContent = data.email || 'Ej angiven';
+        document.getElementById('status').textContent = data.status === 'active' ? 'Aktiv' : 'Pending';
+        document.getElementById('memberSince').textContent = new Date(data.createdAt).toLocaleDateString('sv-SE');
+
+        // Set AI tone
+        document.getElementById('aiTone').value = data.aiTone || 'friendly';
+
+        // Store category info
+        selectedCategories = data.selectedCategories || ['outdoor'];
+        maxCategories = data.maxCategories || 1;
+
+        // Show content
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+
+        // Load categories and transactions
+        await loadCategories();
+        loadTransactions();
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        alert('Kunde inte ladda användardata. Försök logga in igen.');
+        logout();
+      }
+    }
+
+    // Load available categories
+    async function loadCategories() {
+      try {
+        const response = await fetch('/api/account/categories', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load categories');
+        }
+
+        const data = await response.json();
+        availableCategories = data.availableCategories;
+        selectedCategories = data.selectedCategories || ['outdoor'];
+        maxCategories = data.maxCategories || 1;
+
+        renderCategories();
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    }
+
+    // Render categories
+    function renderCategories() {
+      const grid = document.getElementById('categoriesGrid');
+      const warningDiv = document.getElementById('categoryLimitWarning');
+      const maxText = document.getElementById('maxCategoriesText');
+
+      // Show warning if limited
+      if (maxCategories < 999) {
+        warningDiv.style.display = 'block';
+        maxText.textContent = maxCategories;
+      }
+
+      grid.innerHTML = availableCategories.map(cat => `
+        <div class="category-card ${selectedCategories.includes(cat.id) ? 'selected' : ''}" 
+             onclick="toggleCategory('${cat.id}')"
+             id="category-${cat.id}">
+          <div class="category-check">✓</div>
+          <span class="category-icon">${cat.icon}</span>
+          <div class="category-name">${cat.name}</div>
+          <div class="category-description">${cat.description}</div>
+        </div>
+      `).join('');
+    }
+
+    // Toggle category selection
+    async function toggleCategory(categoryId) {
+      const card = document.getElementById(`category-${categoryId}`);
+      const isSelected = selectedCategories.includes(categoryId);
+
+      if (isSelected) {
+        // Deselect
+        if (selectedCategories.length <= 1) {
+          alert('Du måste ha minst en kategori vald.');
+          return;
+        }
+        selectedCategories = selectedCategories.filter(id => id !== categoryId);
+      } else {
+        // Select
+        if (selectedCategories.length >= maxCategories) {
+          alert(`Du kan endast välja max ${maxCategories} ${maxCategories === 1 ? 'kategori' : 'kategorier'} med din nuvarande plan. Uppgradera för fler kategorier!`);
+          return;
+        }
+        selectedCategories.push(categoryId);
+      }
+
+      // Update backend
+      try {
+        const response = await fetch('/api/account/categories', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ categories: selectedCategories })
+        });
+
+        if (response.ok) {
+          renderCategories();
+          const successMsg = document.getElementById('settingsSuccess');
+          successMsg.textContent = 'AI-kategorier uppdaterade!';
+          successMsg.style.display = 'block';
+          setTimeout(() => {
+            successMsg.style.display = 'none';
+            successMsg.textContent = 'Inställningar sparade!';
+          }, 3000);
+        } else {
+          const error = await response.json();
+          alert(error.error || 'Kunde inte uppdatera kategorier.');
+          await loadCategories(); // Reload to reset state
+        }
+      } catch (error) {
+        console.error('Error updating categories:', error);
+        alert('Ett fel uppstod. Försök igen.');
+        await loadCategories();
+      }
+    }
+
+    // Load transactions
+    async function loadTransactions() {
+      try {
+        const response = await fetch('/api/account/transactions', {
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load transactions');
+        }
+
+        const data = await response.json();
+        const tbody = document.getElementById('transactionsBody');
+        
+        if (data.transactions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">Inga transaktioner ännu</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = data.transactions.map(t => `
+          <tr>
+            <td>${new Date(t.created_at).toLocaleDateString('sv-SE')}</td>
+            <td><span class="transaction-type type-${t.type}">${t.type}</span></td>
+            <td>${t.credits_delta > 0 ? '+' : ''}${t.credits_delta}</td>
+            <td>${t.description || '-'}</td>
+          </tr>
+        `).join('');
+      } catch (error) {
+        console.error('Error loading transactions:', error);
+      }
+    }
+
+    // Handle settings form submit
+    document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const aiTone = document.getElementById('aiTone').value;
+
+      try {
+        const response = await fetch('/api/account/settings', {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ aiTone })
+        });
+
+        if (response.ok) {
+          const successMsg = document.getElementById('settingsSuccess');
+          successMsg.style.display = 'block';
+          setTimeout(() => {
+            successMsg.style.display = 'none';
+          }, 3000);
+        } else {
+          alert('Kunde inte spara inställningar. Försök igen.');
+        }
+      } catch (error) {
+        console.error('Error saving settings:', error);
+        alert('Ett fel uppstod. Försök igen.');
+      }
+    });
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('authToken');
+      window.location.href = '/login.html';
+    }
+
+    // Load data on page load
+    loadUserData();
+  </script>
+</body>
+</html>
