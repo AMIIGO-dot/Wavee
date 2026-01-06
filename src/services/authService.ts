@@ -113,7 +113,7 @@ export class AuthService {
    */
   async googleAuth(googleId: string, email: string, phoneNumber?: string): Promise<{ token: string; user: any; isNew: boolean }> {
     // Try to find existing user by google_id
-    const existingUser = await this.userService.getUserByGoogleId(googleId);
+    let existingUser = await this.userService.getUserByGoogleId(googleId);
     
     if (existingUser) {
       // User exists - login
@@ -121,6 +121,24 @@ export class AuthService {
       return {
         token,
         user: this.sanitizeUser(existingUser),
+        isNew: false,
+      };
+    }
+
+    // Check if user exists with this email (but no google_id yet)
+    const userByEmail = await this.userService.getUserByEmail(email);
+    if (userByEmail) {
+      // Link Google account to existing user
+      await this.userService.updateUser(userByEmail.phone_number, {
+        google_id: googleId,
+      });
+
+      const updatedUser = await this.userService.getUser(userByEmail.phone_number);
+      const token = this.generateToken(updatedUser.phone_number, updatedUser.email);
+      
+      return {
+        token,
+        user: this.sanitizeUser(updatedUser),
         isNew: false,
       };
     }
