@@ -200,6 +200,41 @@ export class UserService {
   }
 
   /**
+   * Transfer user data from old phone to new phone (for phone number updates)
+   */
+  async transferUserData(oldPhone: string, newPhone: string): Promise<void> {
+    const user = await this.getUser(oldPhone);
+    if (!user) {
+      throw new Error('Source user not found');
+    }
+
+    // Update the new user with all credits and data from old user
+    await this.db.run(
+      'UPDATE users SET credits_remaining = ?, stripe_customer_id = ?, pricing_tier = ?, ai_tone = ? WHERE phone_number = ?',
+      [user.credits_remaining, user.stripe_customer_id, user.pricing_tier, user.ai_tone, newPhone]
+    );
+
+    // Transfer sessions
+    await this.db.run(
+      'UPDATE sessions SET phone_number = ? WHERE phone_number = ?',
+      [newPhone, oldPhone]
+    );
+
+    console.log(`[USER] Transferred data from ${oldPhone} to ${newPhone}`);
+  }
+
+  /**
+   * Delete user (only for temporary google_ users)
+   */
+  async deleteUser(phoneNumber: string): Promise<void> {
+    await this.db.run(
+      'DELETE FROM users WHERE phone_number = ?',
+      [phoneNumber]
+    );
+    console.log(`[USER] Deleted user: ${phoneNumber}`);
+  }
+
+  /**
    * Log transaction (purchase, usage, refund)
    */
   async logTransaction(

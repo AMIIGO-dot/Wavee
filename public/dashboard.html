@@ -605,6 +605,95 @@
     .agent-modal-btn.secondary:hover {
       background: #e5e5e7;
     }
+
+    /* Phone Modal */
+    .phone-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      padding: 20px;
+      overflow-y: auto;
+    }
+
+    .phone-modal-content {
+      background: #ffffff;
+      max-width: 500px;
+      margin: 100px auto;
+      border-radius: 12px;
+      padding: 32px;
+      text-align: center;
+    }
+
+    .phone-modal-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #1d1d1f;
+    }
+
+    .phone-modal-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+    }
+
+    .phone-modal input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #d2d2d7;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+
+    .phone-modal input:focus {
+      outline: none;
+      border-color: #1d1d1f;
+    }
+
+    .phone-modal-hint {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .phone-modal-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
+      background: #1d1d1f;
+      color: #ffffff;
+      transition: all 0.3s;
+    }
+
+    .phone-modal-btn:hover {
+      background: #333;
+    }
+
+    .phone-modal-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .phone-modal-error {
+      background: #ffe5e5;
+      color: #d32f2f;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -762,6 +851,29 @@
     </div>
   </div>
 
+  <!-- Phone Number Modal -->
+  <div id="phoneModal" class="phone-modal">
+    <div class="phone-modal-content">
+      <div class="phone-modal-title">Välkommen till WAVEE! 🎉</div>
+      <div class="phone-modal-subtitle">För att använda SMS-assistenten behöver vi ditt telefonnummer</div>
+      
+      <div class="phone-modal-error" id="phoneModalError"></div>
+      
+      <form id="phoneModalForm">
+        <input 
+          type="tel" 
+          id="phoneModalInput" 
+          placeholder="+46701234567" 
+          required
+          pattern="^\+[1-9]\d{10,14}$"
+        >
+        <div class="phone-modal-hint">Använd internationellt format (t.ex. +46 för Sverige)</div>
+        
+        <button type="submit" class="phone-modal-btn" id="phoneModalBtn">Fortsätt</button>
+      </form>
+    </div>
+  </div>
+
   <script>
     const API_BASE = '';
     let authToken = localStorage.getItem('authToken');
@@ -796,7 +908,16 @@
         document.getElementById('tierBadge').textContent = data.pricingTier || 'Ingen';
 
         // Update account info
-        document.getElementById('phoneNumber').textContent = data.phoneNumber;
+        const phoneNumber = data.phoneNumber;
+        
+        // Check if user needs to provide phone number (Google user with temp phone)
+        if (phoneNumber && phoneNumber.startsWith('google_')) {
+          showPhoneModal();
+          document.getElementById('phoneNumber').textContent = 'Ej angett';
+        } else {
+          document.getElementById('phoneNumber').textContent = phoneNumber;
+        }
+        
         document.getElementById('email').textContent = data.email || 'Ej angiven';
         document.getElementById('status').textContent = data.status === 'active' ? 'Aktiv' : 'Pending';
         document.getElementById('memberSince').textContent = new Date(data.createdAt).toLocaleDateString('sv-SE');
@@ -1209,6 +1330,69 @@
       div.textContent = text;
       return div.innerHTML;
     }
+
+    // Phone Modal Functions
+    function showPhoneModal() {
+      document.getElementById('phoneModal').style.display = 'block';
+    }
+
+    function hidePhoneModal() {
+      document.getElementById('phoneModal').style.display = 'none';
+    }
+
+    // Handle phone modal form submission
+    document.getElementById('phoneModalForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const phoneNumber = document.getElementById('phoneModalInput').value.trim();
+      const errorEl = document.getElementById('phoneModalError');
+      const submitBtn = document.getElementById('phoneModalBtn');
+      
+      // Validate format
+      if (!phoneNumber.match(/^\+[1-9]\d{10,14}$/)) {
+        errorEl.textContent = 'Ogiltigt format. Använd +46701234567 för svenska nummer';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Uppdaterar...';
+      errorEl.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/auth/update-phone', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ phoneNumber })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Update token
+          authToken = data.token;
+          localStorage.setItem('authToken', data.token);
+          
+          // Hide modal and reload data
+          hidePhoneModal();
+          await loadUserData();
+          alert('Telefonnummer sparat! 📱');
+        } else {
+          errorEl.textContent = data.error || 'Kunde inte uppdatera telefonnummer';
+          errorEl.style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error updating phone:', error);
+        errorEl.textContent = 'Ett fel uppstod. Försök igen.';
+        errorEl.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Fortsätt';
+      }
+    });
 
     // Load data on page load
     loadUserData();

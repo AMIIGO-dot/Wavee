@@ -147,20 +147,17 @@ export class AuthService {
       };
     }
 
-    // New user - need phone number
-    if (!phoneNumber) {
-      throw new Error('Phone number required for new users');
-    }
-
-    // Create new user with Google ID
-    await this.userService.createUser(phoneNumber, {
+    // New user - create with temporary phone number (google_id as placeholder)
+    const tempPhone = phoneNumber || `google_${googleId}`;
+    
+    await this.userService.createUser(tempPhone, {
       google_id: googleId,
       email: email,
       status: 'pending',
     });
 
-    const user = await this.userService.getUser(phoneNumber);
-    const token = this.generateToken(phoneNumber, email);
+    const user = await this.userService.getUser(tempPhone);
+    const token = this.generateToken(tempPhone, email);
 
     return {
       token,
@@ -185,6 +182,55 @@ export class AuthService {
     } catch (error) {
       throw new Error('Invalid token');
     }
+  }
+
+  /**
+   * Update phone number for existing user
+   */
+  async updatePhoneNumber(oldPhone: string, newPhone: string): Promise<void> {
+    // Check if new phone is already taken
+    const existingUser = await this.userService.getUser(newPhone);
+    if (existingUser && existingUser.phone_number !== oldPhone) {
+      throw new Error('Phone number already in use');
+    }
+
+    // Get the user's data
+    const user = await this.userService.getUser(oldPhone);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Create new user with updated phone and copy all data
+    await this.userService.createUser(newPhone, {
+      password_hash: user.password_hash || undefined,
+      google_id: user.google_id || undefined,
+      email: user.email || undefined,
+      status: user.status,
+    });
+
+    // Update credits, sessions, etc.
+    await this.userService.transferUserData(oldPhone, newPhone);
+
+    // Delete old user if it was a temporary google_ phone
+    if (oldPhone.startsWith('google_')) {
+      await this.userService.deleteUser(oldPhone);
+    }
+  }
+
+  /**
+   * Get user with fresh token
+   */
+  async getUserWithToken(phoneNumber: string): Promise<{ token: string; user: any }> {
+    const user = await this.userService.getUser(phoneNumber);
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    const token = this.generateToken(phoneNumber, user.email);
+    return {
+      token,
+      user: this.sanitizeUser(user),
+    };
   }
 
   /**

@@ -354,7 +354,7 @@
         const googleId = payload.sub;
         const email = payload.email;
 
-        // Try to login/register with Google
+        // Login/register with Google (no phone number needed initially)
         const res = await fetch('/api/auth/google', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -364,36 +364,10 @@
         const data = await res.json();
 
         if (res.ok) {
-          // Check if user is new and needs phone number
-          if (data.isNew && !data.user.phone_number) {
-            // Prompt for phone number
-            const phone = prompt('Ange ditt telefonnummer (internationellt format, t.ex. +46701234567):');
-            if (!phone) {
-              showError('Telefonnummer krävs för nya användare');
-              return;
-            }
-
-            // Retry with phone number
-            const retryRes = await fetch('/api/auth/google', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ googleId, email, phoneNumber: phone }),
-            });
-
-            const retryData = await retryRes.json();
-            if (retryRes.ok) {
-              localStorage.setItem('authToken', retryData.token);
-              showSuccess('Inloggning lyckades! Omdirigerar...');
-              setTimeout(() => window.location.href = '/dashboard.html', 1000);
-            } else {
-              showError(retryData.error || 'Något gick fel');
-            }
-          } else {
-            // Success - save token and redirect
-            localStorage.setItem('authToken', data.token);
-            showSuccess('Inloggning lyckades! Omdirigerar...');
-            setTimeout(() => window.location.href = '/dashboard.html', 1000);
-          }
+          // Save token and redirect to dashboard
+          localStorage.setItem('authToken', data.token);
+          showSuccess('Inloggning lyckades! Omdirigerar...');
+          setTimeout(() => window.location.href = '/dashboard.html', 1000);
         } else {
           showError(data.error || 'Google-inloggning misslyckades');
         }

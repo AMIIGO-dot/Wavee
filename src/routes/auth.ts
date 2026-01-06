@@ -97,4 +97,39 @@ router.get('/me', authenticateToken, async (req: Request, res: Response) => {
   res.json({ user: req.user });
 });
 
+/**
+ * PUT /api/auth/update-phone
+ * Update phone number for authenticated user
+ */
+router.put('/update-phone', authenticateToken, async (req: Request, res: Response) => {
+  try {
+    const { phoneNumber } = req.body;
+
+    if (!phoneNumber) {
+      return res.status(400).json({ error: 'Phone number required' });
+    }
+
+    // Validate phone number format
+    if (!phoneNumber.match(/^\+[1-9]\d{10,14}$/)) {
+      return res.status(400).json({ error: 'Invalid phone number format. Use international format (e.g., +46701234567)' });
+    }
+
+    const currentUser = req.user;
+    if (!currentUser) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+
+    // Update phone number
+    await authService.updatePhoneNumber(currentUser.phone_number, phoneNumber);
+
+    // Generate new token with updated phone
+    const result = await authService.getUserWithToken(phoneNumber);
+
+    res.json(result);
+  } catch (error: any) {
+    console.error('[AUTH] Update phone error:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 export default router;
