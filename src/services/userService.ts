@@ -39,6 +39,7 @@ export class UserService {
    */
   async updateUser(phoneNumber: string, updates: {
     password_hash?: string;
+    google_id?: string;
     email?: string;
     ai_tone?: 'casual' | 'professional' | 'friendly';
     status?: 'pending' | 'active' | 'inactive';
@@ -49,6 +50,10 @@ export class UserService {
     if (updates.password_hash !== undefined) {
       fields.push('password_hash = ?');
       values.push(updates.password_hash);
+    }
+    if (updates.google_id !== undefined) {
+      fields.push('google_id = ?');
+      values.push(updates.google_id);
     }
     if (updates.email !== undefined) {
       fields.push('email = ?');

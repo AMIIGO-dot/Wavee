@@ -134,6 +134,10 @@ export class AuthService {
       });
 
       const updatedUser = await this.userService.getUser(userByEmail.phone_number);
+      if (!updatedUser) {
+        throw new Error('Failed to retrieve updated user');
+      }
+
       const token = this.generateToken(updatedUser.phone_number, updatedUser.email);
       
       return {
