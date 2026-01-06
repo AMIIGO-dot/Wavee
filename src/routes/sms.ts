@@ -284,6 +284,7 @@ async function handleActiveUserMessage(
     } else {
       // Get user's selected categories
       const userCategories = await userService.getSelectedCategories(phoneNumber);
+      console.log(`[SMS] User ${phoneNumber} categories:`, userCategories);
 
       // Generate AI response with user's categories
       aiResponse = await aiService.generateResponse(

@@ -98,8 +98,10 @@ export class AIService {
     language: 'sv' | 'en' = 'sv'
   ): Promise<string> {
     try {
+      console.log('[AI] Generating response with categories:', userCategories, 'language:', language);
       // Get system prompt based on user's selected categories and language
       const systemPrompt = getSystemPromptForCategories(userCategories, language);
+      console.log('[AI] System prompt preview:', systemPrompt.substring(0, 150) + '...');
 
       return await this.generateResponseWithSystemPrompt(
         userMessage,
