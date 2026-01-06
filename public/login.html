@@ -416,106 +416,7 @@
         // Update active tab
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         tab.classList.add('active');
-const GOOGLE_CLIENT_ID = '1047684863647-f6dg9t5ubvcm7qm2bfh9tldg7t6cvgqc.apps.googleusercontent.com';
-
-    // Initialize Google Sign-In
-    function initializeGoogleSignIn() {
-      if (typeof google === 'undefined') {
-        console.error('Google Sign-In library not loaded');
-        return;
-      }
-
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleGoogleResponse,
-        auto_select: false,
-      });
-
-      // Render button for login form
-      google.accounts.id.renderButton(
-        document.getElementById('googleButtonWrapper'),
-        {
-          theme: 'filled_black',
-          size: 'large',
-          width: '100%',
-          text: 'continue_with',
-          locale: 'sv',
-        }
-      );
-
-      // Render button for register form
-      google.accounts.id.renderButton(
-        document.getElementById('googleButtonWrapperRegister'),
-        {
-          theme: 'filled_black',
-          size: 'large',
-          width: '100%',
-          text: 'signup_with',
-          locale: 'sv',
-        }
-      );
-    }
-
-    // Handle Google sign-in response
-    async function handleGoogleResponse(response) {
-      try {
-        // Decode JWT to get user info
-        const credential = response.credential;
-        const payload = JSON.parse(atob(credential.split('.')[1]));
         
-        const googleId = payload.sub;
-        const email = payload.email;
-
-        // Try to login/register with Google
-        const res = await fetch('/api/auth/google', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ googleId, email }),
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          // Check if user is new and needs phone number
-          if (data.isNew && !data.user.phone_number) {
-            // Prompt for phone number
-            const phone = prompt('Ange ditt telefonnummer (internationellt format, t.ex. +46701234567):');
-            if (!phone) {
-              showError('Telefonnummer krävs för nya användare');
-              return;
-            }
-
-            // Retry with phone number
-            const retryRes = await fetch('/api/auth/google', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ googleId, email, phoneNumber: phone }),
-            });
-
-            const retryData = await retryRes.json();
-            if (retryRes.ok) {
-              localStorage.setItem('authToken', retryData.token);
-              showSuccess('Inloggning lyckades! Omdirigerar...');
-              setTimeout(() => window.location.href = '/dashboard.html', 1000);
-            } else {
-              showError(retryData.error || 'Något gick fel');
-            }
-          } else {
-            // Success - save token and redirect
-            localStorage.setItem('authToken', data.token);
-            showSuccess('Inloggning lyckades! Omdirigerar...');
-            setTimeout(() => window.location.href = '/dashboard.html', 1000);
-          }
-        showError('Ett fel uppstod vid Google-inloggning');
-      }
-    }
-
-    // Initialize when page loads
-    window.addEventListener('load', () => {
-      initializeGoogleSignIn();
-    });
-
-    
         // Update active form
         document.querySelectorAll('.form-content').forEach(f => f.classList.remove('active'));
         if (tabName === 'login') {
@@ -596,11 +497,6 @@ const GOOGLE_CLIENT_ID = '1047684863647-f6dg9t5ubvcm7qm2bfh9tldg7t6cvgqc.apps.go
         showError('Ett fel uppstod. Försök igen.');
       }
     });
-
-    // Google login (placeholder - requires Google OAuth setup)
-    function handleGoogleLogin() {
-      showError('Google-inloggning kommer snart! Använd telefonnummer & lösenord tills vidare.');
-    }
 
     function showError(message) {
       const errorEl = document.getElementById('errorMessage');
