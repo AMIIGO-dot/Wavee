@@ -669,6 +669,61 @@
       font-weight: 600;
     }
 
+    /* Use Cases Grid */
+    .use-cases-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin: 0 auto 80px;
+      max-width: 1200px;
+    }
+
+    .use-case-card {
+      background: #ffffff;
+      border: 2px solid #d2d2d7;
+      border-radius: 16px;
+      padding: 32px 24px;
+      transition: all 0.3s;
+      text-align: left;
+    }
+
+    .use-case-card:hover {
+      border-color: #1d1d1f;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .use-case-card h3 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #1d1d1f;
+      margin-bottom: 12px;
+    }
+
+    .use-case-card p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic;
+      font-size: 0.95rem;
+    }
+
+    .use-case-tag {
+      display: inline-block;
+      background: #f5f5f7;
+      color: #1d1d1f;
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 768px) {
       .privacy-section {
         padding: 40px 20px;
@@ -726,6 +781,10 @@
       .usp-grid {
         grid-template-columns: 1fr;
       }
+
+      .use-cases-grid {
+        grid-template-columns: 1fr;
+      }
     }
 
     @media (max-width: 768px) {
@@ -775,19 +834,21 @@
 
     <!-- Hero Section -->
     <div class="hero-container">
-      <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 20px; color: #1d1d1f; line-height: 1.1;" data-i18n="hero_title">AI direkt via SMS. Ingen app. Inget konto. Ingen inloggning.</h1>
-      <p style="font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: #666; margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto;" data-i18n="hero_subtitle">Skicka ett SMS – få svar direkt från AI.</p>
-      
+      <!-- Demo Section with Mobile Mockup -->
       <div class="demo-section">
-        <div style="display: flex; justify-content: center; align-items: flex-start; gap: 60px; flex-wrap: wrap; margin-top: 48px;">
-          
+        <div class="demo-content">
+          <h1 data-i18n="hero_title">AI direkt via SMS.<br>Ingen app. Inget konto. Ingen inloggning.</h1>
+          <p data-i18n="hero_text">Skicka ett SMS – få svar direkt från AI.</p>
           <div class="qr-code-section">
-            <div class="qr-code-box">
-              <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%2B46738631761" alt="QR Code">
-            </div>
-            <p style="font-size: 1.1rem; color: #1d1d1f; margin-top: 16px; font-weight: 600;" data-i18n="scan_or_sms">Skanna eller SMS:a</p>
-            <p id="phoneNumber" style="font-size: 1.3rem; color: #1d1d1f; font-weight: 700; margin-top: 4px;">+46 73-863 17 61</p>
-            <p style="font-size: 0.95rem; color: #666; margin-top: 12px;" data-i18n="get_3_free">3 gratis meddelanden vid aktivering</p>
+            <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=sms:+46738631761?body=Hej,%20jag%20vill%20testa%20tj%C3%A4nsten" alt="Skanna för att skicka SMS">
+            <p><strong data-i18n="qr_scan_text">Skanna för att testa gratis</strong></p>
+            <p style="font-size: 0.9rem; color: #86868b; margin-top: 5px;" data-i18n="qr_free_credits">3 gratis konversationer vid aktivering</p>
+            <p id="phoneDisplay" style="font-size: 1.1rem; color: #1d1d1f; margin-top: 10px; font-weight: 600;">+46 73 863 1761</p>
+          </div>
+        </div>
+        <div class="mobile-mockup">
+          <div class="phone-screen">
+            <img id="demoGif" src="/assets/aba513ce-d982-47fe-82ae-071420ea36f6.gif" alt="WAVEE SMS Demo">
           </div>
         </div>
       </div>
@@ -798,42 +859,36 @@
     
     <div class="use-cases-grid">
       <div class="use-case-card">
-        <div class="use-case-icon">🏕️</div>
         <h3 data-i18n="usecase1_title">I skogen</h3>
         <p data-i18n="usecase1_text">"Kan man äta dessa bär?" "Hur bygger man nödskydd?" "Väder nästa 3 dagar"</p>
         <span class="use-case-tag" data-i18n="usecase1_tag">Funkar utan mobildata</span>
       </div>
 
       <div class="use-case-card">
-        <div class="use-case-icon">⛰️</div>
         <h3 data-i18n="usecase2_title">På fjället</h3>
         <p data-i18n="usecase2_text">"Var är jag?" "Närmaste stuga?" "Risk för laviner idag?"</p>
         <span class="use-case-tag" data-i18n="usecase2_tag">GPS-koordinater fungerar</span>
       </div>
 
       <div class="use-case-card">
-        <div class="use-case-icon">🚣</div>
         <h3 data-i18n="usecase3_title">På havet</h3>
         <p data-i18n="usecase3_text">"Vindstyrka nästa 6h?" "Närmaste hamn?" "Simma hit säkert?"</p>
         <span class="use-case-tag" data-i18n="usecase3_tag">Satellit-SMS kompatibel</span>
       </div>
 
       <div class="use-case-card">
-        <div class="use-case-icon">🏗️</div>
         <h3 data-i18n="usecase4_title">På byggplatsen</h3>
         <p data-i18n="usecase4_text">"Hur blandar man betong?" "Vilket verktyg behövs?" "Material för 50m²?"</p>
         <span class="use-case-tag" data-i18n="usecase4_tag">8 AI-kategorier tillgängliga</span>
       </div>
 
       <div class="use-case-card">
-        <div class="use-case-icon">🌍</div>
         <h3 data-i18n="usecase5_title">Utomlands</h3>
         <p data-i18n="usecase5_text">"Väder i Tokyo?" "Öppettider här?" "Översätt 'hjälp' till spanska"</p>
         <span class="use-case-tag" data-i18n="usecase5_tag">Internationellt väder</span>
       </div>
 
       <div class="use-case-card">
-        <div class="use-case-icon">📱</div>
         <h3 data-i18n="usecase6_title">Med vilken telefon som helst</h3>
         <p data-i18n="usecase6_text">Nokia 3310, arbetsmobil, reservtelefon. Allt som kan SMS fungerar.</p>
         <span class="use-case-tag" data-i18n="usecase6_tag">Ingen smartphone krävs</span>
@@ -861,22 +916,18 @@
     <!-- Simple Benefits -->
     <div style="background: #ffffff; border: 2px solid #d2d2d7; border-radius: 24px; padding: 48px 40px; margin: 80px 0; text-align: center;">
       <h2 style="font-size: 1.8rem; margin-bottom: 32px; color: #1d1d1f;" data-i18n="benefits_title">Enkelt & pålitligt</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; max-width: 800px; margin: 0 auto;">
+      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 900px; margin: 0 auto;">
         <div>
-          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
-          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit1">Kräver ingen mobildata</p>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;"><span style="color: #2c5f2d; font-size: 1.2rem; margin-right: 4px;">✓</span> <span data-i18n="benefit1">Kräver ingen mobildata</span></p>
         </div>
         <div>
-          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
-          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit2">Ingen app att ladda ner</p>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;"><span style="color: #2c5f2d; font-size: 1.2rem; margin-right: 4px;">✓</span> <span data-i18n="benefit2">Ingen app att ladda ner</span></p>
         </div>
         <div>
-          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
-          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit3">Inget konto behövs</p>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;"><span style="color: #2c5f2d; font-size: 1.2rem; margin-right: 4px;">✓</span> <span data-i18n="benefit3">Inget konto behövs</span></p>
         </div>
         <div>
-          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
-          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit4">Svar på sekunder</p>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;"><span style="color: #2c5f2d; font-size: 1.2rem; margin-right: 4px;">✓</span> <span data-i18n="benefit4">Svar på sekunder</span></p>
         </div>
       </div>
       <p style="margin-top: 28px; color: #86868b; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 0.9rem;" data-i18n="privacy_note">Ingen bakgrundsspårning. Konversationer raderas efter 30 min. Bara telefonnummer sparas.</p>
