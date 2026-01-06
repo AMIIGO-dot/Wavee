@@ -188,32 +188,43 @@ export class AuthService {
    * Update phone number for existing user
    */
   async updatePhoneNumber(oldPhone: string, newPhone: string): Promise<void> {
-    // Check if new phone is already taken
-    const existingUser = await this.userService.getUser(newPhone);
-    if (existingUser && existingUser.phone_number !== oldPhone) {
-      throw new Error('Phone number already in use');
-    }
-
-    // Get the user's data
-    const user = await this.userService.getUser(oldPhone);
-    if (!user) {
+    // Get the Google user's data
+    const googleUser = await this.userService.getUser(oldPhone);
+    if (!googleUser) {
       throw new Error('User not found');
     }
 
-    // Create new user with updated phone and copy all data
-    await this.userService.createUser(newPhone, {
-      password_hash: user.password_hash || undefined,
-      google_id: user.google_id || undefined,
-      email: user.email || undefined,
-      status: user.status,
-    });
+    // Check if target phone number already exists
+    const existingUser = await this.userService.getUser(newPhone);
+    
+    if (existingUser) {
+      // User already exists with this phone - merge accounts
+      // Link Google ID to existing account and update email if not set
+      await this.userService.updateUser(newPhone, {
+        google_id: googleUser.google_id || undefined,
+        email: googleUser.email || undefined, // Will only update if existing email is empty
+      });
 
-    // Update credits, sessions, etc.
-    await this.userService.transferUserData(oldPhone, newPhone);
+      // Delete the temporary Google user
+      if (oldPhone.startsWith('google_')) {
+        await this.userService.deleteUser(oldPhone);
+      }
+    } else {
+      // No existing user - create new user with the phone number
+      await this.userService.createUser(newPhone, {
+        password_hash: googleUser.password_hash || undefined,
+        google_id: googleUser.google_id || undefined,
+        email: googleUser.email || undefined,
+        status: googleUser.status,
+      });
 
-    // Delete old user if it was a temporary google_ phone
-    if (oldPhone.startsWith('google_')) {
-      await this.userService.deleteUser(oldPhone);
+      // Transfer credits, sessions, etc.
+      await this.userService.transferUserData(oldPhone, newPhone);
+
+      // Delete old user if it was a temporary google_ phone
+      if (oldPhone.startsWith('google_')) {
+        await this.userService.deleteUser(oldPhone);
+      }
     }
   }
 

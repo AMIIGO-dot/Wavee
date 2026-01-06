@@ -55,7 +55,8 @@ export class UserService {
       fields.push('google_id = ?');
       values.push(updates.google_id);
     }
-    if (updates.email !== undefined) {
+    // Only update email if it's provided (not undefined and not empty string)
+    if (updates.email !== undefined && updates.email !== '') {
       fields.push('email = ?');
       values.push(updates.email);
     }
