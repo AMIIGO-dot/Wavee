@@ -775,154 +775,115 @@
 
     <!-- Hero Section -->
     <div class="hero-container">
-      <!-- Demo Section with Mobile Mockup -->
-      <div class="demo-section">
-        <div class="demo-content">
-          <h1 data-i18n="hero_title">AI direkt via SMS.<br>Ingen app. Inget konto. Ingen inloggning.</h1>
-          <p data-i18n="hero_text">Skicka ett SMS – få svar direkt från AI.</p>
-          <div class="qr-code-section">
-            <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=sms:+46738631761?body=Hej,%20jag%20vill%20testa%20tj%C3%A4nsten" alt="Skanna för att skicka SMS">
-            <p><strong data-i18n="qr_scan_text">Skanna för att testa gratis</strong></p>
-            <p style="font-size: 0.9rem; color: #86868b; margin-top: 5px;" data-i18n="qr_free_credits">3 gratis konversationer vid aktivering</p>
-            <p id="phoneDisplay" style="font-size: 1.1rem; color: #1d1d1f; margin-top: 10px; font-weight: 600;">+46 73 863 1761</p>
-          </div>
-        </div>
-        <div class="mobile-mockup">
-          <div class="phone-screen">
-            <img id="demoGif" src="/assets/aba513ce-d982-47fe-82ae-071420ea36f6.gif" alt="WAVEE SMS Demo">
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- USP Cards -->
-    <h2 style="text-align: center; font-size: 2rem; margin-bottom: 40px; color: #1d1d1f;" data-i18n="why_wavee">Varför WAVEE?</h2>
-    <div class="usp-grid">
-      <div class="usp-card">
-        <h3 data-i18n="usp1_title">Kräver ingen mobildata</h3>
-        <p data-i18n="usp1_text">Fungerar över vanlig SMS-täckning. Kompatibel med satellit-SMS.</p>
-      </div>
-      <div class="usp-card">
-        <h3 data-i18n="usp2_title">Ingen app att ladda ner</h3>
-        <p data-i18n="usp2_text">Skicka ett vanligt SMS. Inget konto. Inga uppgifter som sparas.</p>
-      </div>
-      <div class="usp-card">
-        <h3 data-i18n="usp3_title">Svar på sekunder</h3>
-        <p data-i18n="usp3_text">Korta, säkerhetsfokuserade svar. Inga meningslösa detaljer.</p>
-      </div>
-      <div class="usp-card">
-        <h3 data-i18n="usp4_title">Väder och navigation</h3>
-        <p data-i18n="usp4_text">Väderprognoser, GPS-positioner och närliggande platser när du behöver det.</p>
-      </div>
-      <!-- TEMPORARY: Image analysis card hidden until US number is A2P certified -->
-      <!-- <div class="usp-card">
-        <h3 data-i18n="usp5_title">Bildanalys via MMS</h3>
-        <p data-i18n="usp5_text">Skicka bild och fråga "Kan jag äta denna svamp?" eller "Vad är detta för växt?". AI analyserar direkt.</p>
-      </div> -->
-      <div class="usp-card">
-        <h3 data-i18n="usp6_title">Fungerar överallt</h3>
-        <p data-i18n="usp6_text">Så länge du har SMS-täckning kan du ställa frågor. I skogen, på havet, utomlands.</p>
-      </div>
-      <div class="usp-card">
-        <h3 data-i18n="usp7_title">Betala för det du använder</h3>
-        <p data-i18n="usp7_text">Inga prenumerationer. Köp ett saldopaket när du behöver det.</p>
-      </div>
-      <div class="usp-card">
-        <h3 data-i18n="usp8_title">Enkel och pålitlig</h3>
-        <p data-i18n="usp8_text">En tjänst byggd för situationer där tillförlitlighet är viktigare än funktioner.</p>
-      </div>
-    </div>
-
-    <!-- Privacy Section -->
-    <div class="privacy-section">
-      <h2 data-i18n="privacy_title">AI-assistenten som inte spårar dig</h2>
-      <p class="subtitle" data-i18n="privacy_subtitle">Ingen app. Ingen molndatabas. Ingen positionsspårning.</p>
+      <h1 style="font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 700; margin-bottom: 20px; color: #1d1d1f; line-height: 1.1;" data-i18n="hero_title">AI direkt via SMS. Ingen app. Inget konto. Ingen inloggning.</h1>
+      <p style="font-size: clamp(1.1rem, 2.5vw, 1.4rem); color: #666; margin-bottom: 48px; max-width: 700px; margin-left: auto; margin-right: auto;" data-i18n="hero_subtitle">Skicka ett SMS – få svar direkt från AI.</p>
       
-      <div class="privacy-features">
-        <div class="privacy-feature">
-          <h3 data-i18n="priv1_title">Ingen bakgrundsspårning</h3>
-          <p data-i18n="priv1_text">Ingen GPS-tracking i bakgrunden. Ingen analytics. Ingen metadata-insamling.</p>
-        </div>
-        <div class="privacy-feature">
-          <h3 data-i18n="priv2_title">Ingen permanent historik</h3>
-          <p data-i18n="priv2_text">Konversationer raderas efter 30 minuter. Inga chatloggar sparas i molnet.</p>
-        </div>
-        <div class="privacy-feature">
-          <h3 data-i18n="priv3_title">Ingen app att installera</h3>
-          <p data-i18n="priv3_text">Fungerar via vanlig SMS. Inget att ladda ner. Ingen alltid-på tjänst.</p>
-        </div>
-        <div class="privacy-feature">
-          <h3 data-i18n="priv4_title">Fungerar offline</h3>
-          <p data-i18n="priv4_text">Stöd för satellit-SMS (Garmin inReach, Starlink). Ingen mobildata krävs.</p>
-        </div>
-      </div>
-
-      <div class="comparison-table">
-        <table>
-          <thead>
-            <tr>
-              <th data-i18n="comp_feature">Funktion</th>
-              <th>WAVEE</th>
-              <th data-i18n="comp_traditional">Traditionella appar</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td data-i18n="comp_row1">Kräver app-installation</td>
-              <td><span class="crossmark">✗</span> <span data-i18n="no">Nej</span></td>
-              <td><span class="checkmark">✓</span> <span data-i18n="yes">Ja</span></td>
-            </tr>
-            <tr>
-              <td data-i18n="comp_row2">Bakgrundsaktivitet & tracking</td>
-              <td><span class="crossmark">✗</span> <span data-i18n="never">Aldrig</span></td>
-              <td><span class="checkmark">✓</span> <span data-i18n="often">Ofta</span></td>
-            </tr>
-            <tr>
-              <td data-i18n="comp_row3">Sparar konversationshistorik</td>
-              <td><span class="crossmark">✗</span> <span data-i18n="comp_30min">30 min</span></td>
-              <td><span class="checkmark">✓</span> <span data-i18n="permanent">Permanent</span></td>
-            </tr>
-            <tr>
-              <td data-i18n="comp_row4">Fungerar offline/satellit</td>
-              <td><span class="checkmark">✓</span> <span data-i18n="yes">Ja</span></td>
-              <td><span class="crossmark">✗</span> <span data-i18n="no">Nej</span></td>
-            </tr>
-            <tr>
-              <td data-i18n="comp_row5">Kräver personlig data</td>
-              <td><span class="crossmark">✗</span> <span data-i18n="comp_phone_only">Bara telefonnummer</span></td>
-              <td><span class="checkmark">✓</span> <span data-i18n="comp_account_etc">Konto, email, etc</span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Nokia 3310 Section -->
-    <div class="privacy-section" style="margin: 80px auto; max-width: 1000px;">
-      <div style="display: flex; align-items: center; gap: 60px; flex-wrap: wrap;">
-        <div style="flex: 1; min-width: 300px;">
-          <h2 style="font-size: 2.5em; font-weight: 700; margin-bottom: 20px; color: #1d1d1f;" data-i18n="nokia_title">AI till din Nokia 3310.</h2>
-          <p style="font-size: 1.3em; color: #666; margin-bottom: 30px; line-height: 1.5;" data-i18n="nokia_subtitle">Du behöver ingen smartphone för att använda AI. Vilken telefon som helst med SMS fungerar.</p>
-          <ul style="list-style: none; padding: 0;">
-            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
-              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
-              <span data-i18n="nokia_point1">Ingen smartphone behövs</span>
-            </li>
-            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
-              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
-              <span data-i18n="nokia_point2">Bara SMS-funktion krävs</span>
-            </li>
-            <li style="font-size: 1.1em; color: #1d1d1f; margin-bottom: 15px; padding-left: 30px; position: relative;">
-              <span style="position: absolute; left: 0; color: #2c5f2d; font-weight: 700;">✓</span>
-              <span data-i18n="nokia_point3">Perfekt för minimalism & backup</span>
-            </li>
-          </ul>
-        </div>
-        <div style="flex: 1; min-width: 300px; text-align: center;">
-          <img src="assets/cellphone-6596299_1280.png" alt="Nokia 3310" style="max-width: 100%; height: auto; max-height: 400px; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.1));">
+      <div class="demo-section">
+        <div style="display: flex; justify-content: center; align-items: flex-start; gap: 60px; flex-wrap: wrap; margin-top: 48px;">
+          
+          <div class="qr-code-section">
+            <div class="qr-code-box">
+              <img id="qrCode" src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=%2B46738631761" alt="QR Code">
+            </div>
+            <p style="font-size: 1.1rem; color: #1d1d1f; margin-top: 16px; font-weight: 600;" data-i18n="scan_or_sms">Skanna eller SMS:a</p>
+            <p id="phoneNumber" style="font-size: 1.3rem; color: #1d1d1f; font-weight: 700; margin-top: 4px;">+46 73-863 17 61</p>
+            <p style="font-size: 0.95rem; color: #666; margin-top: 12px;" data-i18n="get_3_free">3 gratis meddelanden vid aktivering</p>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Use Cases Section -->
+    <h2 style="text-align: center; font-size: 2rem; margin-bottom: 48px; color: #1d1d1f;" data-i18n="use_cases_title">När du behöver det mest</h2>
+    
+    <div class="use-cases-grid">
+      <div class="use-case-card">
+        <div class="use-case-icon">🏕️</div>
+        <h3 data-i18n="usecase1_title">I skogen</h3>
+        <p data-i18n="usecase1_text">"Kan man äta dessa bär?" "Hur bygger man nödskydd?" "Väder nästa 3 dagar"</p>
+        <span class="use-case-tag" data-i18n="usecase1_tag">Funkar utan mobildata</span>
+      </div>
+
+      <div class="use-case-card">
+        <div class="use-case-icon">⛰️</div>
+        <h3 data-i18n="usecase2_title">På fjället</h3>
+        <p data-i18n="usecase2_text">"Var är jag?" "Närmaste stuga?" "Risk för laviner idag?"</p>
+        <span class="use-case-tag" data-i18n="usecase2_tag">GPS-koordinater fungerar</span>
+      </div>
+
+      <div class="use-case-card">
+        <div class="use-case-icon">🚣</div>
+        <h3 data-i18n="usecase3_title">På havet</h3>
+        <p data-i18n="usecase3_text">"Vindstyrka nästa 6h?" "Närmaste hamn?" "Simma hit säkert?"</p>
+        <span class="use-case-tag" data-i18n="usecase3_tag">Satellit-SMS kompatibel</span>
+      </div>
+
+      <div class="use-case-card">
+        <div class="use-case-icon">🏗️</div>
+        <h3 data-i18n="usecase4_title">På byggplatsen</h3>
+        <p data-i18n="usecase4_text">"Hur blandar man betong?" "Vilket verktyg behövs?" "Material för 50m²?"</p>
+        <span class="use-case-tag" data-i18n="usecase4_tag">8 AI-kategorier tillgängliga</span>
+      </div>
+
+      <div class="use-case-card">
+        <div class="use-case-icon">🌍</div>
+        <h3 data-i18n="usecase5_title">Utomlands</h3>
+        <p data-i18n="usecase5_text">"Väder i Tokyo?" "Öppettider här?" "Översätt 'hjälp' till spanska"</p>
+        <span class="use-case-tag" data-i18n="usecase5_tag">Internationellt väder</span>
+      </div>
+
+      <div class="use-case-card">
+        <div class="use-case-icon">📱</div>
+        <h3 data-i18n="usecase6_title">Med vilken telefon som helst</h3>
+        <p data-i18n="usecase6_text">Nokia 3310, arbetsmobil, reservtelefon. Allt som kan SMS fungerar.</p>
+        <span class="use-case-tag" data-i18n="usecase6_tag">Ingen smartphone krävs</span>
+      </div>
+    </div>
+
+    <!-- Compact Nokia Section -->
+    <div style="background: #f5f5f7; border-radius: 24px; padding: 48px 40px; margin: 80px auto; max-width: 1000px;">
+      <div style="display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
+        <div>
+          <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; color: #1d1d1f;" data-i18n="nokia_title">AI till din Nokia 3310.</h2>
+          <p style="font-size: 1.1rem; color: #666; margin-bottom: 20px; line-height: 1.5;" data-i18n="nokia_subtitle">Du behöver ingen smartphone för att använda AI. Vilken telefon som helst med SMS fungerar.</p>
+          <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+            <span style="font-size: 0.95rem; color: #1d1d1f;">✓ <span data-i18n="nokia_point1">Ingen smartphone behövs</span></span>
+            <span style="font-size: 0.95rem; color: #1d1d1f;">✓ <span data-i18n="nokia_point2">Bara SMS-funktion krävs</span></span>
+            <span style="font-size: 0.95rem; color: #1d1d1f;">✓ <span data-i18n="nokia_point3">Perfekt för minimalism</span></span>
+          </div>
+        </div>
+        <div style="text-align: center;">
+          <img src="assets/cellphone-6596299_1280.png" alt="Nokia 3310" style="max-width: 180px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));">
+        </div>
+      </div>
+    </div>
+
+    <!-- Simple Benefits -->
+    <div style="background: #ffffff; border: 2px solid #d2d2d7; border-radius: 24px; padding: 48px 40px; margin: 80px 0; text-align: center;">
+      <h2 style="font-size: 1.8rem; margin-bottom: 32px; color: #1d1d1f;" data-i18n="benefits_title">Enkelt & pålitligt</h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; max-width: 800px; margin: 0 auto;">
+        <div>
+          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit1">Kräver ingen mobildata</p>
+        </div>
+        <div>
+          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit2">Ingen app att ladda ner</p>
+        </div>
+        <div>
+          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit3">Inget konto behövs</p>
+        </div>
+        <div>
+          <div style="font-size: 2rem; margin-bottom: 8px;">✓</div>
+          <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;" data-i18n="benefit4">Svar på sekunder</p>
+        </div>
+      </div>
+      <p style="margin-top: 28px; color: #86868b; max-width: 600px; margin-left: auto; margin-right: auto; font-size: 0.9rem;" data-i18n="privacy_note">Ingen bakgrundsspårning. Konversationer raderas efter 30 min. Bara telefonnummer sparas.</p>
+    </div>
+
+    <!-- Pricing Section -->
+    <h2 id="priser" style="text-align: center; font-size: 2rem; margin: 80px 0 48px; color: #1d1d1f;" data-i18n="pricing_title">Priser</h2>
 
     <div class="pricing-grid">
       <!-- Starter Tier -->
@@ -1198,6 +1159,34 @@
         nokia_point1: 'Ingen smartphone behövs',
         nokia_point2: 'Bara SMS-funktion krävs',
         nokia_point3: 'Perfekt för minimalism & backup',
+        use_cases_title: 'När du behöver det mest',
+        usecase1_title: 'I skogen',
+        usecase1_text: '"Kan man äta dessa bär?" "Hur bygger man nödskydd?" "Väder nästa 3 dagar"',
+        usecase1_tag: 'Funkar utan mobildata',
+        usecase2_title: 'På fjället',
+        usecase2_text: '"Var är jag?" "Närmaste stuga?" "Risk för laviner idag?"',
+        usecase2_tag: 'GPS-koordinater fungerar',
+        usecase3_title: 'På havet',
+        usecase3_text: '"Vindstyrka nästa 6h?" "Närmaste hamn?" "Simma hit säkert?"',
+        usecase3_tag: 'Satellit-SMS kompatibel',
+        usecase4_title: 'På byggplatsen',
+        usecase4_text: '"Hur blandar man betong?" "Vilket verktyg behövs?" "Material för 50m²?"',
+        usecase4_tag: '8 AI-kategorier tillgängliga',
+        usecase5_title: 'Utomlands',
+        usecase5_text: '"Väder i Tokyo?" "Öppettider här?" "Översätt \'hjälp\' till spanska"',
+        usecase5_tag: 'Internationellt väder',
+        usecase6_title: 'Med vilken telefon som helst',
+        usecase6_text: 'Nokia 3310, arbetsmobil, reservtelefon. Allt som kan SMS fungerar.',
+        usecase6_tag: 'Ingen smartphone krävs',
+        benefits_title: 'Enkelt & pålitligt',
+        benefit1: 'Kräver ingen mobildata',
+        benefit2: 'Ingen app att ladda ner',
+        benefit3: 'Inget konto behövs',
+        benefit4: 'Svar på sekunder',
+        privacy_note: 'Ingen bakgrundsspårning. Konversationer raderas efter 30 min. Bara telefonnummer sparas.',
+        pricing_title: 'Priser',
+        scan_or_sms: 'Skanna eller SMS:a',
+        get_3_free: '3 gratis meddelanden vid aktivering',
         comp_feature: 'Funktion',
         comp_traditional: 'Traditionella appar',
         comp_row1: 'Kräver app-installation',
@@ -1330,6 +1319,34 @@
         nokia_point1: 'No smartphone needed',
         nokia_point2: 'Only SMS function required',
         nokia_point3: 'Perfect for minimalism & backup',
+        use_cases_title: 'When you need it most',
+        usecase1_title: 'In the forest',
+        usecase1_text: '"Can I eat these berries?" "How to build emergency shelter?" "Weather next 3 days"',
+        usecase1_tag: 'Works without mobile data',
+        usecase2_title: 'In the mountains',
+        usecase2_text: '"Where am I?" "Nearest cabin?" "Avalanche risk today?"',
+        usecase2_tag: 'GPS coordinates work',
+        usecase3_title: 'At sea',
+        usecase3_text: '"Wind speed next 6h?" "Nearest harbor?" "Safe to swim here?"',
+        usecase3_tag: 'Satellite SMS compatible',
+        usecase4_title: 'At the construction site',
+        usecase4_text: '"How to mix concrete?" "What tool is needed?" "Materials for 50m²?"',
+        usecase4_tag: '8 AI categories available',
+        usecase5_title: 'Abroad',
+        usecase5_text: '"Weather in Tokyo?" "Opening hours here?" "Translate \'help\' to Spanish"',
+        usecase5_tag: 'International weather',
+        usecase6_title: 'With any phone',
+        usecase6_text: 'Nokia 3310, work phone, backup phone. Anything that can SMS works.',
+        usecase6_tag: 'No smartphone required',
+        benefits_title: 'Simple & reliable',
+        benefit1: 'No mobile data required',
+        benefit2: 'No app to download',
+        benefit3: 'No account needed',
+        benefit4: 'Answers in seconds',
+        privacy_note: 'No background tracking. Conversations deleted after 30 min. Only phone number saved.',
+        pricing_title: 'Pricing',
+        scan_or_sms: 'Scan or text',
+        get_3_free: '3 free messages upon activation',
         comp_feature: 'Feature',
         comp_traditional: 'Traditional apps',
         comp_row1: 'Requires app installation',
