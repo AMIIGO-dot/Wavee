@@ -378,19 +378,19 @@ export class UserService {
   async activateCustomAgent(phoneNumber: string, agentId: number): Promise<void> {
     // Deactivate all agents for this user
     await this.db.run(
-      'UPDATE custom_agents SET active = $1 WHERE phone_number = $2',
+      'UPDATE custom_agents SET active = ? WHERE phone_number = ?',
       [false, phoneNumber]
     );
     
     // Activate the selected agent
     await this.db.run(
-      'UPDATE custom_agents SET active = $1 WHERE id = $2',
+      'UPDATE custom_agents SET active = ? WHERE id = ?',
       [true, agentId]
     );
     
     // Update user's active_agent_id
     await this.db.run(
-      'UPDATE users SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE phone_number = $2',
+      'UPDATE users SET active_agent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
       [agentId, phoneNumber]
     );
     
@@ -403,13 +403,13 @@ export class UserService {
   async deactivateCustomAgent(phoneNumber: string): Promise<void> {
     // Deactivate all agents for this user
     await this.db.run(
-      'UPDATE custom_agents SET active = $1 WHERE phone_number = $2',
+      'UPDATE custom_agents SET active = ? WHERE phone_number = ?',
       [false, phoneNumber]
     );
     
     // Clear user's active_agent_id
     await this.db.run(
-      'UPDATE users SET active_agent_id = $1, updated_at = CURRENT_TIMESTAMP WHERE phone_number = $2',
+      'UPDATE users SET active_agent_id = ?, updated_at = CURRENT_TIMESTAMP WHERE phone_number = ?',
       [null, phoneNumber]
     );
     
@@ -426,7 +426,7 @@ export class UserService {
     }
     
     return await this.db.get(
-      'SELECT * FROM custom_agents WHERE id = $1 AND active = $2',
+      'SELECT * FROM custom_agents WHERE id = ? AND active = ?',
       [user.active_agent_id, true]
     );
   }
