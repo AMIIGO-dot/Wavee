@@ -199,16 +199,17 @@ export class AuthService {
     
     if (existingUser) {
       // User already exists with this phone - merge accounts
-      // Link Google ID to existing account and update email if not set
-      await this.userService.updateUser(newPhone, {
-        google_id: googleUser.google_id || undefined,
-        email: googleUser.email || undefined, // Will only update if existing email is empty
-      });
-
-      // Delete the temporary Google user
+      
+      // Delete the temporary Google user FIRST to avoid duplicate google_id constraint
       if (oldPhone.startsWith('google_')) {
         await this.userService.deleteUser(oldPhone);
       }
+      
+      // Now link Google ID to existing account and update email if not set
+      await this.userService.updateUser(newPhone, {
+        google_id: googleUser.google_id || undefined,
+        email: googleUser.email || undefined,
+      });
     } else {
       // No existing user - create new user with the phone number
       await this.userService.createUser(newPhone, {
