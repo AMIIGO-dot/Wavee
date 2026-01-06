@@ -785,6 +785,49 @@
       .use-cases-grid {
         grid-template-columns: 1fr;
       }
+
+      .nokia-section {
+        padding: 32px 24px !important;
+        margin: 48px 20px !important;
+      }
+
+      .nokia-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+        text-align: center;
+      }
+
+      .nokia-section h2 {
+        font-size: 1.5rem !important;
+      }
+
+      .nokia-section p {
+        font-size: 1rem !important;
+      }
+
+      .nokia-section img {
+        max-width: 140px !important;
+      }
+
+      .benefits-section {
+        padding: 32px 20px !important;
+        margin: 48px 20px !important;
+      }
+
+      .benefits-section h2 {
+        font-size: 1.5rem !important;
+        margin-bottom: 24px !important;
+      }
+
+      .benefits-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+        text-align: left !important;
+      }
+
+      .benefits-grid p {
+        font-size: 0.9rem !important;
+      }
     }
 
     @media (max-width: 768px) {
@@ -896,8 +939,8 @@
     </div>
 
     <!-- Compact Nokia Section -->
-    <div style="background: #f5f5f7; border-radius: 24px; padding: 48px 40px; margin: 80px auto; max-width: 1000px;">
-      <div style="display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
+    <div class="nokia-section" style="background: #f5f5f7; border-radius: 24px; padding: 48px 40px; margin: 80px auto; max-width: 1000px;">
+      <div class="nokia-grid" style="display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
         <div>
           <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 12px; color: #1d1d1f;" data-i18n="nokia_title">AI till din Nokia 3310.</h2>
           <p style="font-size: 1.1rem; color: #666; margin-bottom: 20px; line-height: 1.5;" data-i18n="nokia_subtitle">Du behöver ingen smartphone för att använda AI. Vilken telefon som helst med SMS fungerar.</p>
@@ -914,9 +957,9 @@
     </div>
 
     <!-- Simple Benefits -->
-    <div style="background: #ffffff; border: 2px solid #d2d2d7; border-radius: 24px; padding: 48px 40px; margin: 80px 0; text-align: center;">
+    <div class="benefits-section" style="background: #ffffff; border: 2px solid #d2d2d7; border-radius: 24px; padding: 48px 40px; margin: 80px 0; text-align: center;">
       <h2 style="font-size: 1.8rem; margin-bottom: 32px; color: #1d1d1f;" data-i18n="benefits_title">Enkelt & pålitligt</h2>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 900px; margin: 0 auto;">
+      <div class="benefits-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; max-width: 900px; margin: 0 auto;">
         <div>
           <p style="font-weight: 600; color: #1d1d1f; font-size: 0.95rem;"><span style="color: #2c5f2d; font-size: 1.2rem; margin-right: 4px;">✓</span> <span data-i18n="benefit1">Kräver ingen mobildata</span></p>
         </div>
