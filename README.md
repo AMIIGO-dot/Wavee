@@ -1,8 +1,8 @@
-# Outdoor SMS Assistant
+# SMS Assistant
 
-An SMS-based survival and outdoor AI assistant built with Node.js, TypeScript, Twilio, and OpenAI.
+An SMS-based AI assistant built with Node.js, TypeScript, Twilio, and OpenAI.
 
-Send an SMS, receive safety-focused outdoor advice. No mobile app. No web UI. Just SMS.
+Send an SMS, receive AI response, No mobile app. No web UI. Just SMS.
 
 ---
 
