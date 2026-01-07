@@ -1566,6 +1566,12 @@
     function setLanguage(lang) {
       localStorage.setItem('wavee_language', lang);
       
+      // Redirect to correct language page
+      if (lang === 'sv') {
+        window.location.href = '/';
+        return;
+      }
+      
       // Update active button
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);

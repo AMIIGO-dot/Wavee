@@ -1576,6 +1576,16 @@
     function setLanguage(lang) {
       localStorage.setItem('wavee_language', lang);
       
+      // Redirect to correct language page
+      if (lang === 'en' && !window.location.pathname.includes('/en')) {
+        window.location.href = '/en';
+        return;
+      }
+      if (lang === 'sv' && window.location.pathname.includes('/en')) {
+        window.location.href = '/';
+        return;
+      }
+      
       // Update active button
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
