@@ -12,6 +12,12 @@ export interface AICategory {
 
 export const AI_CATEGORIES: AICategory[] = [
   {
+    id: 'general',
+    name: 'Generell Assistent',
+    description: 'Kan svara på frågor inom alla områden',
+    icon: '🤖',
+  },
+  {
     id: 'outdoor',
     name: 'Friluftsliv & Överlevnad',
     description: 'Väderprognoser, GPS-navigation, överlevnadsråd, djur & natur',

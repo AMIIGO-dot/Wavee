@@ -279,13 +279,13 @@ export class UserService {
   async getSelectedCategories(phoneNumber: string): Promise<string[]> {
     const user = await this.getUser(phoneNumber);
     if (!user || !user.selected_categories) {
-      return ['outdoor']; // Default to outdoor category
+      return ['general']; // Default to general category
     }
     try {
       return JSON.parse(user.selected_categories);
     } catch (error) {
       console.error('[USER] Error parsing selected_categories:', error);
-      return ['outdoor'];
+      return ['general'];
     }
   }
 
