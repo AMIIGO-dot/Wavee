@@ -249,12 +249,12 @@
   <div class="login-container">
     <div class="logo">
       <img src="/assets/wavee%20white(1).png" alt="WAVEE">
-      <p>Din personliga SMS-assistent</p>
+      <p data-i18n="tagline">Din personliga SMS-assistent</p>
     </div>
 
     <div class="tabs">
-      <div class="tab active" data-tab="login">Logga in</div>
-      <div class="tab" data-tab="register">Registrera</div>
+      <div class="tab active" data-tab="login" data-i18n="login_tab">Logga in</div>
+      <div class="tab" data-tab="register" data-i18n="register_tab">Registrera</div>
     </div>
 
     <div class="error-message" id="errorMessage"></div>
@@ -264,17 +264,17 @@
     <div class="form-content active" id="loginForm">
       <form id="loginFormElement">
         <div class="form-group">
-          <label for="loginPhone">Telefon eller E-post</label>
+          <label for="loginPhone" data-i18n="phone_or_email">Telefon eller E-post</label>
           <input type="text" id="loginPhone" placeholder="+46701234567 eller din@email.com" required>
         </div>
         <div class="form-group">
-          <label for="loginPassword">Lösenord</label>
-          <input type="password" id="loginPassword" placeholder="Ange lösenord" required>
+          <label for="loginPassword" data-i18n="password">Lösenord</label>
+          <input type="password" id="loginPassword" data-i18n-placeholder="enter_password" placeholder="Ange lösenord" required>
         </div>
-        <button type="submit" class="submit-btn">Logga in</button>
+        <button type="submit" class="submit-btn" data-i18n="login_button">Logga in</button>
       </form>
 
-      <div class="divider">eller</div>
+      <div class="divider" data-i18n="or">eller</div>
 
       <div id="googleButtonWrapper"></div>
     </div>
@@ -283,31 +283,87 @@
     <div class="form-content" id="registerForm">
       <form id="registerFormElement">
         <div class="form-group">
-          <label for="registerPhone">Telefonnummer</label>
+          <label for="registerPhone" data-i18n="phone_number">Telefonnummer</label>
           <input type="tel" id="registerPhone" placeholder="+46701234567" required>
         </div>
         <div class="form-group">
-          <label for="registerEmail">E-post (valfritt)</label>
+          <label for="registerEmail" data-i18n="email_optional">E-post (valfritt)</label>
           <input type="email" id="registerEmail" placeholder="din@email.com">
         </div>
         <div class="form-group">
-          <label for="registerPassword">Lösenord (minst 8 tecken)</label>
-          <input type="password" id="registerPassword" placeholder="Välj ett starkt lösenord" required minlength="8">
+          <label for="registerPassword" data-i18n="password_min">Lösenord (minst 8 tecken)</label>
+          <input type="password" id="registerPassword" data-i18n-placeholder="choose_password" placeholder="Välj ett starkt lösenord" required minlength="8">
         </div>
-        <button type="submit" class="submit-btn">Skapa konto</button>
+        <button type="submit" class="submit-btn" data-i18n="create_account">Skapa konto</button>
       </form>
 
-      <div class="divider">eller</div>
+      <div class="divider" data-i18n="or">eller</div>
 
       <div id="googleButtonWrapperRegister"></div>
     </div>
 
     <div class="footer-link">
-      Ny kund? <a href="/">Köp credits här</a>
+      <span data-i18n="new_customer">Ny kund?</span> <a href="/" data-i18n="buy_credits">Köp credits här</a>
     </div>
   </div>
 
   <script>
+    const translations = {
+      sv: {
+        tagline: 'Din personliga SMS-assistent',
+        login_tab: 'Logga in',
+        register_tab: 'Registrera',
+        phone_or_email: 'Telefon eller E-post',
+        password: 'Lösenord',
+        enter_password: 'Ange lösenord',
+        login_button: 'Logga in',
+        or: 'eller',
+        phone_number: 'Telefonnummer',
+        email_optional: 'E-post (valfritt)',
+        password_min: 'Lösenord (minst 8 tecken)',
+        choose_password: 'Välj ett starkt lösenord',
+        create_account: 'Skapa konto',
+        new_customer: 'Ny kund?',
+        buy_credits: 'Köp credits här'
+      },
+      en: {
+        tagline: 'Your personal SMS assistant',
+        login_tab: 'Login',
+        register_tab: 'Register',
+        phone_or_email: 'Phone or Email',
+        password: 'Password',
+        enter_password: 'Enter password',
+        login_button: 'Login',
+        or: 'or',
+        phone_number: 'Phone Number',
+        email_optional: 'Email (optional)',
+        password_min: 'Password (min 8 characters)',
+        choose_password: 'Choose a strong password',
+        create_account: 'Create Account',
+        new_customer: 'New customer?',
+        buy_credits: 'Buy credits here'
+      }
+    };
+
+    // Detect language from localStorage
+    const lang = localStorage.getItem('wavee_language') || 'sv';
+
+    // Apply translations
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (translations[lang][key]) {
+        el.textContent = translations[lang][key];
+      }
+    });
+
+    // Apply placeholder translations
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.dataset.i18nPlaceholder;
+      if (translations[lang][key]) {
+        el.placeholder = translations[lang][key];
+      }
+    });
+
     const GOOGLE_CLIENT_ID = '713074662060-s7771trphjcmr66ic3n14tk8pd364g2u.apps.googleusercontent.com';
 
     // Initialize Google Sign-In
