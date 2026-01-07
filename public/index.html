@@ -1557,6 +1557,14 @@
 
     // Detect browser language
     function detectLanguage() {
+      // Check URL parameter first
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlLang = urlParams.get('lang');
+      if (urlLang === 'en' || urlLang === 'sv') {
+        localStorage.setItem('wavee_language', urlLang);
+        return urlLang;
+      }
+      
       const savedLang = localStorage.getItem('wavee_language');
       if (savedLang) return savedLang;
       
